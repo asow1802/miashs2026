@@ -1,0 +1,2 @@
+/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/TP2_MARKTING/dataset_propre.csv
+/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/dataviz_dataset.csv

@@ -1,0 +1,487 @@
+2026-01-14 05:57:39,069 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 05:57:39,070 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 05:57:39,070 : INFO  : main :  : NodeLogger :  :  : # Welcome to KNIME Analytics Platform v5.9.0.v202512101359 (Build December 10, 2025)    #
+2026-01-14 05:57:39,070 : INFO  : main :  : NodeLogger :  :  : # Based on Eclipse, http://www.eclipse.org                                              #
+2026-01-14 05:57:39,070 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : # Copyright by KNIME AG, Zurich, Switzerland and others.                                #
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : # Website: http://www.knime.com                                                         #
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : # E-mail: contact@knime.com                                                             #
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : # For more details see the KNIME log file:                                              #
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : # /home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/knime.log
+2026-01-14 05:57:39,071 : INFO  : main :  : NodeLogger :  :  : #---------------------------------------------------------------------------------------#
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # logging date=mer. janv. 14 05:57:39 CET 2026
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # java.version=21.0.9
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # java.vm.version=21.0.9+10-LTS
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # java.vendor=Eclipse Adoptium
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # os.name=Linux
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # os.arch=amd64
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # number of CPUs=8
+2026-01-14 05:57:39,086 : INFO  : main :  : NodeLogger :  :  : # assertions=off
+2026-01-14 05:57:39,088 : INFO  : main :  : NodeLogger :  :  : # host=layedev-HP-ProBook-440-G8-Notebook-PC
+2026-01-14 05:57:39,088 : INFO  : main :  : NodeLogger :  :  : # username=layedev
+2026-01-14 05:57:39,089 : INFO  : main :  : NodeLogger :  :  : # max mem=2048MB
+2026-01-14 05:57:39,089 : INFO  : main :  : NodeLogger :  :  : # application=org.knime.product.KNIME_APPLICATION
+2026-01-14 05:57:39,097 : INFO  : main :  : NodeLogger :  :  : # KNID=11-a27c28f87a008434-01-8d8185e61bfe2ab6
+2026-01-14 05:57:39,097 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 05:57:40,849 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_database_drivers.txt' does not exist.
+2026-01-14 05:57:40,849 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_database_urls.txt' does not exist.
+2026-01-14 05:57:42,067 : INFO  : Node Repository Initializer :  : DatabaseDriverLoader :  :  : Could not load 'libJdbcOdbc.so' library which is known to be a problem under Linux when using the 'sun.jdbc.odbc.JdbcOdbcDriver'; that is, the driver is not loaded.
+2026-01-14 05:57:42,181 : INFO  : main :  : ProcessWatchdog :  :  : KNIME Process Watchdog memory limit not configured
+2026-01-14 05:57:42,182 : INFO  : main :  : ProcessWatchdog :  :  : External process memory watchdog is disabled, because the memory limit is set to -1
+2026-01-14 05:57:42,291 : INFO  : Node Repository Initializer :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_string2date-formats.txt' does not exist.
+2026-01-14 05:57:42,494 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_org.knime.kerberos.name.txt' does not exist.
+2026-01-14 05:57:42,978 : INFO  : Thread-163 :  : KnimeBrowserView :  :  : %cinfo%c Injecting global logger 
+      background: #00BCD4;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 05:57:44,233 : ERROR : Provisioning Event Dispatcher :  : runtime :  :  : Exception during event notification
+java.lang.IllegalArgumentException: Location must be absolute: ..
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.checkValidLocation(AbstractRepositoryManager.java:829)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.contains(AbstractRepositoryManager.java:286)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.addRepository(AbstractRepositoryManager.java:177)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.notify(AbstractRepositoryManager.java:914)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:106)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+2026-01-14 05:57:44,236 : ERROR : Provisioning Event Dispatcher :  : runtime :  :  : Exception during event notification
+java.lang.IllegalArgumentException: Location must be absolute: ..
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.checkValidLocation(AbstractRepositoryManager.java:829)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.contains(AbstractRepositoryManager.java:286)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.addRepository(AbstractRepositoryManager.java:177)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.notify(AbstractRepositoryManager.java:914)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:106)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+2026-01-14 05:57:44,401 : INFO  : Node Repository Initializer :  : GroupByNodeFactory :  :  : Modern dialog for GroupBy node can be enabled via system property "org.knime.base.node.preproc.groupby.dialog". Note: This property will be removed in a future version.
+
+2026-01-14 05:57:44,669 : INFO  : Node Repository Initializer :  : Pivot2NodeFactory :  :  : Modern dialog for Pivot node can be enabled via system property "org.knime.base.node.preproc.groupby.dialog". Note: This property will be removed in a future version.
+
+2026-01-14 05:57:45,159 : INFO  : Node Repository Initializer :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_createFileNameHistoryKey.txt' does not exist.
+2026-01-14 05:57:46,665 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 05:57:46,716 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 05:57:46,731 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 05:57:46,736 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 05:57:46,742 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 05:57:46,742 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 06:28:51,893 : INFO  : Thread-1467 :  : Server :  :  : jetty-12.0.21; built: 2025-05-09T00:32:00.688Z; git: 1c4719601e31b05b7d68910d2edd980259f1f53c; jvm 21.0.9+10-LTS
+2026-01-14 06:28:51,906 : INFO  : Thread-1467 :  : AbstractConnector :  :  : Started ServerConnector@74c542c6{HTTP/1.1, (http/1.1)}{0.0.0.0:34775}
+2026-01-14 06:28:51,906 : INFO  : Thread-1467 :  : Server :  :  : Started oejs.Server@cb71e64{STARTING}[12.0.21,sto=0] @1884268ms
+2026-01-14 06:28:51,906 : INFO  : Thread-1467 :  : OAuthAuthenticator :  :  : Opening browser to perform authentication for 'https://api.hub.knime.com'.
+2026-01-14 06:28:57,911 : INFO  : Thread-1477 :  : Server :  :  : Stopped oejs.Server@cb71e64{STOPPING}[12.0.21,sto=0]
+2026-01-14 06:28:57,921 : INFO  : Thread-1477 :  : AbstractConnector :  :  : Stopped ServerConnector@74c542c6{HTTP/1.1, (http/1.1)}{0.0.0.0:34775}
+2026-01-14 06:29:13,679 : INFO  : main :  : OAuthAuthenticator :  :  : Logout from 'https://api.hub.knime.com'.
+2026-01-14 06:29:45,059 : INFO  : ModalContext :  : LoadWorkflowRunnable :  :  : New workflow created.
+2026-01-14 06:37:38,167 : WARN  : comm-pool-thread-1 :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:37:44,663 : INFO  : AWT-EventQueue-0 :  : StringHistory : CSV Reader : 3:1 : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_csv_reader_writer.txt' does not exist.
+2026-01-14 06:37:50,736 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:38:03,966 : INFO  : main :  : BrowserInitializer :  :  : Xulrunner disabled. Please visit https://www.knime.com/faq#q6 for details.
+2026-01-14 06:38:43,442 : WARN  : comm-pool-thread-1 :  : Node : CSV Reader : 3:2 : Please specify a file
+2026-01-14 06:39:22,104 : WARN  : main :  : Node : CSV Reader : 3:2 : Please specify a file
+2026-01-14 06:40:38,201 : WARN  : comm-pool-thread-1 :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:41:29,567 : WARN  : comm-pool-thread-1 :  : Node : Excel Reader : 3:2 : Please specify a file
+2026-01-14 06:41:32,546 : INFO  : AWT-EventQueue-0 :  : StringHistory : Excel Reader : 3:2 : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_excel_reader_writer.txt' does not exist.
+2026-01-14 06:41:53,806 : WARN  : main :  : Node : Excel Reader : 3:2 : Please specify a file
+2026-01-14 06:42:17,918 : INFO  : ModalContext :  : LoadWorkflowRunnable :  :  : New workflow created.
+2026-01-14 06:42:24,125 : WARN  : comm-pool-thread-1 :  : Node : CSV Reader : 4:1 : Please specify a file
+2026-01-14 06:48:10,150 : WARN  : main :  : Node : CSV Reader : 4:1 : Please specify a file
+2026-01-14 06:48:28,477 : WARN  : main :  : Node : CSV Reader : 4:1 : Please specify a file
+2026-01-14 06:48:30,163 : WARN  : main :  : Node : CSV Reader : 4:1 : Please specify a file
+2026-01-14 06:48:51,081 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:48:51,990 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:49:13,521 : WARN  : comm-pool-thread-1 :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:49:13,522 : WARN  : comm-pool-thread-1 :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:49:25,209 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:49:26,459 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:49:56,487 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:50:20,898 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:50:21,578 : WARN  : main :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:50:38,764 : INFO  : KNIME shutdown hooks - org.knime.core.util.FileUtil$$Lambda/0x00007d0644322a18 :  : FileUtil :  :  : Deleting 1 temporary files.
+2026-01-14 06:52:21,897 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : # Welcome to KNIME Analytics Platform v5.9.0.v202512101359 (Build December 10, 2025)    #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : # Based on Eclipse, http://www.eclipse.org                                              #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : # Copyright by KNIME AG, Zurich, Switzerland and others.                                #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : # Website: http://www.knime.com                                                         #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : # E-mail: contact@knime.com                                                             #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : # For more details see the KNIME log file:                                              #
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : # /home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/knime.log
+2026-01-14 06:52:21,899 : INFO  : main :  : NodeLogger :  :  : #---------------------------------------------------------------------------------------#
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # logging date=mer. janv. 14 06:52:21 CET 2026
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # java.version=21.0.9
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # java.vm.version=21.0.9+10-LTS
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # java.vendor=Eclipse Adoptium
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # os.name=Linux
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # os.arch=amd64
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # number of CPUs=8
+2026-01-14 06:52:21,917 : INFO  : main :  : NodeLogger :  :  : # assertions=off
+2026-01-14 06:52:21,920 : INFO  : main :  : NodeLogger :  :  : # host=layedev-HP-ProBook-440-G8-Notebook-PC
+2026-01-14 06:52:21,921 : INFO  : main :  : NodeLogger :  :  : # username=layedev
+2026-01-14 06:52:21,921 : INFO  : main :  : NodeLogger :  :  : # max mem=2048MB
+2026-01-14 06:52:21,921 : INFO  : main :  : NodeLogger :  :  : # application=org.knime.product.KNIME_APPLICATION
+2026-01-14 06:52:21,927 : INFO  : main :  : NodeLogger :  :  : # KNID=11-a27c28f87a008434-01-8d8185e61bfe2ab6
+2026-01-14 06:52:21,927 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 06:52:23,915 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_database_drivers.txt' does not exist.
+2026-01-14 06:52:23,916 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_database_urls.txt' does not exist.
+2026-01-14 06:52:25,192 : INFO  : Node Repository Initializer :  : DatabaseDriverLoader :  :  : Could not load 'libJdbcOdbc.so' library which is known to be a problem under Linux when using the 'sun.jdbc.odbc.JdbcOdbcDriver'; that is, the driver is not loaded.
+2026-01-14 06:52:25,330 : INFO  : Node Repository Initializer :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_string2date-formats.txt' does not exist.
+2026-01-14 06:52:25,507 : INFO  : main :  : ProcessWatchdog :  :  : KNIME Process Watchdog memory limit not configured
+2026-01-14 06:52:25,508 : INFO  : main :  : ProcessWatchdog :  :  : External process memory watchdog is disabled, because the memory limit is set to -1
+2026-01-14 06:52:25,873 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_org.knime.kerberos.name.txt' does not exist.
+2026-01-14 06:52:26,323 : INFO  : Thread-166 :  : KnimeBrowserView :  :  : %cinfo%c Injecting global logger 
+      background: #00BCD4;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 06:52:26,865 : WARN  : ModalContext :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:52:26,868 : WARN  : ModalContext :  : Node : CSV Reader : 3:1 : Please specify a file
+2026-01-14 06:52:27,556 : ERROR : Provisioning Event Dispatcher :  : runtime :  :  : Exception during event notification
+java.lang.IllegalArgumentException: Location must be absolute: ..
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.checkValidLocation(AbstractRepositoryManager.java:829)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.contains(AbstractRepositoryManager.java:286)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.addRepository(AbstractRepositoryManager.java:177)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.notify(AbstractRepositoryManager.java:914)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:106)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+2026-01-14 06:52:27,561 : ERROR : Provisioning Event Dispatcher :  : runtime :  :  : Exception during event notification
+java.lang.IllegalArgumentException: Location must be absolute: ..
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.checkValidLocation(AbstractRepositoryManager.java:829)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.contains(AbstractRepositoryManager.java:286)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.addRepository(AbstractRepositoryManager.java:177)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.notify(AbstractRepositoryManager.java:914)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:106)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningEventBus.dispatchEvent(ProvisioningEventBus.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+2026-01-14 06:52:28,117 : INFO  : Node Repository Initializer :  : Pivot2NodeFactory :  :  : Modern dialog for Pivot node can be enabled via system property "org.knime.base.node.preproc.groupby.dialog". Note: This property will be removed in a future version.
+
+2026-01-14 06:52:28,978 : INFO  : Node Repository Initializer :  : GroupByNodeFactory :  :  : Modern dialog for GroupBy node can be enabled via system property "org.knime.base.node.preproc.groupby.dialog". Note: This property will be removed in a future version.
+
+2026-01-14 06:52:29,395 : INFO  : Node Repository Initializer :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_createFileNameHistoryKey.txt' does not exist.
+2026-01-14 06:52:29,929 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 06:52:29,984 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 06:52:30,001 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 06:52:30,013 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 06:52:30,013 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 06:52:30,015 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 06:52:35,750 : INFO  : AWT-EventQueue-0 :  : StringHistory : CSV Reader : 3:1 : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_csv_reader_writer.txt' does not exist.
+2026-01-14 06:53:24,137 : ERROR : KNIME-Worker-0-CSV Reader 3:1 :  : Node : CSV Reader : 3:1 : Execute failed: The data row has too many data elements.
+java.lang.IllegalArgumentException: The data row has too many data elements.
+	at org.knime.core.node.util.CheckUtils.checkArgument(CheckUtils.java:260)
+	at org.knime.core.node.util.CheckUtils.checkArgument(CheckUtils.java:121)
+	at org.knime.filehandling.core.node.table.reader.read.CheckSameSizeRead.next(CheckSameSizeRead.java:84)
+	at org.knime.filehandling.core.node.table.reader.read.SkipIdxRead.next(SkipIdxRead.java:85)
+	at org.knime.filehandling.core.node.table.reader.DefaultIndividualTableReader.fillOutputWithProgress(DefaultIndividualTableReader.java:143)
+	at org.knime.filehandling.core.node.table.reader.DefaultIndividualTableReader.fillOutput(DefaultIndividualTableReader.java:121)
+	at org.knime.filehandling.core.node.table.reader.DefaultStagedMultiTableRead$ParallelMultiTableRead$TableChunkReader.readTableChunk(DefaultStagedMultiTableRead.java:406)
+	at org.knime.filehandling.core.node.table.reader.DefaultStagedMultiTableRead$ParallelMultiTableRead.readTable(DefaultStagedMultiTableRead.java:297)
+	at org.knime.filehandling.core.node.table.reader.MultiTableReader.readTable(MultiTableReader.java:178)
+	at org.knime.filehandling.core.node.table.reader.TableReaderNodeModel.execute(TableReaderNodeModel.java:160)
+	at org.knime.core.node.NodeModel.executeModel(NodeModel.java:605)
+	at org.knime.core.node.Node.invokeFullyNodeModelExecute(Node.java:1331)
+	at org.knime.core.node.Node.execute(Node.java:1038)
+	at org.knime.core.node.workflow.NativeNodeContainer.performExecuteNode(NativeNodeContainer.java:618)
+	at org.knime.core.node.exec.LocalNodeExecutionJob.mainExecute(LocalNodeExecutionJob.java:98)
+	at org.knime.core.node.workflow.NodeExecutionJob.internalRun(NodeExecutionJob.java:201)
+	at org.knime.core.node.workflow.NodeExecutionJob.run(NodeExecutionJob.java:120)
+	at org.knime.core.util.ThreadUtils$RunnableWithContextImpl.runWithContext(ThreadUtils.java:369)
+	at org.knime.core.util.ThreadUtils$RunnableWithContext.run(ThreadUtils.java:223)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at org.knime.core.util.ThreadPool$MyFuture.run(ThreadPool.java:143)
+	at org.knime.core.util.ThreadPool$Worker.run(ThreadPool.java:277)
+2026-01-14 06:53:25,795 : ERROR : KNIME-Worker-0-CSV Reader 3:1 :  : Node : CSV Reader : 3:1 : Execute failed: The data row has too many data elements.
+java.lang.IllegalArgumentException: The data row has too many data elements.
+	at org.knime.core.node.util.CheckUtils.checkArgument(CheckUtils.java:260)
+	at org.knime.core.node.util.CheckUtils.checkArgument(CheckUtils.java:121)
+	at org.knime.filehandling.core.node.table.reader.read.CheckSameSizeRead.next(CheckSameSizeRead.java:84)
+	at org.knime.filehandling.core.node.table.reader.read.SkipIdxRead.next(SkipIdxRead.java:85)
+	at org.knime.filehandling.core.node.table.reader.DefaultIndividualTableReader.fillOutputWithProgress(DefaultIndividualTableReader.java:143)
+	at org.knime.filehandling.core.node.table.reader.DefaultIndividualTableReader.fillOutput(DefaultIndividualTableReader.java:121)
+	at org.knime.filehandling.core.node.table.reader.DefaultStagedMultiTableRead$ParallelMultiTableRead$TableChunkReader.readTableChunk(DefaultStagedMultiTableRead.java:406)
+	at org.knime.filehandling.core.node.table.reader.DefaultStagedMultiTableRead$ParallelMultiTableRead.readTable(DefaultStagedMultiTableRead.java:297)
+	at org.knime.filehandling.core.node.table.reader.MultiTableReader.readTable(MultiTableReader.java:178)
+	at org.knime.filehandling.core.node.table.reader.TableReaderNodeModel.execute(TableReaderNodeModel.java:160)
+	at org.knime.core.node.NodeModel.executeModel(NodeModel.java:605)
+	at org.knime.core.node.Node.invokeFullyNodeModelExecute(Node.java:1331)
+	at org.knime.core.node.Node.execute(Node.java:1038)
+	at org.knime.core.node.workflow.NativeNodeContainer.performExecuteNode(NativeNodeContainer.java:618)
+	at org.knime.core.node.exec.LocalNodeExecutionJob.mainExecute(LocalNodeExecutionJob.java:98)
+	at org.knime.core.node.workflow.NodeExecutionJob.internalRun(NodeExecutionJob.java:201)
+	at org.knime.core.node.workflow.NodeExecutionJob.run(NodeExecutionJob.java:120)
+	at org.knime.core.util.ThreadUtils$RunnableWithContextImpl.runWithContext(ThreadUtils.java:369)
+	at org.knime.core.util.ThreadUtils$RunnableWithContext.run(ThreadUtils.java:223)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at org.knime.core.util.ThreadPool$MyFuture.run(ThreadPool.java:143)
+	at org.knime.core.util.ThreadPool$Worker.run(ThreadPool.java:277)
+2026-01-14 06:53:26,849 : ERROR : KNIME-Worker-0-CSV Reader 3:1 :  : Node : CSV Reader : 3:1 : Execute failed: The data row has too many data elements.
+java.lang.IllegalArgumentException: The data row has too many data elements.
+	at org.knime.core.node.util.CheckUtils.checkArgument(CheckUtils.java:260)
+	at org.knime.core.node.util.CheckUtils.checkArgument(CheckUtils.java:121)
+	at org.knime.filehandling.core.node.table.reader.read.CheckSameSizeRead.next(CheckSameSizeRead.java:84)
+	at org.knime.filehandling.core.node.table.reader.read.SkipIdxRead.next(SkipIdxRead.java:85)
+	at org.knime.filehandling.core.node.table.reader.DefaultIndividualTableReader.fillOutputWithProgress(DefaultIndividualTableReader.java:143)
+	at org.knime.filehandling.core.node.table.reader.DefaultIndividualTableReader.fillOutput(DefaultIndividualTableReader.java:121)
+	at org.knime.filehandling.core.node.table.reader.DefaultStagedMultiTableRead$ParallelMultiTableRead$TableChunkReader.readTableChunk(DefaultStagedMultiTableRead.java:406)
+	at org.knime.filehandling.core.node.table.reader.DefaultStagedMultiTableRead$ParallelMultiTableRead.readTable(DefaultStagedMultiTableRead.java:297)
+	at org.knime.filehandling.core.node.table.reader.MultiTableReader.readTable(MultiTableReader.java:178)
+	at org.knime.filehandling.core.node.table.reader.TableReaderNodeModel.execute(TableReaderNodeModel.java:160)
+	at org.knime.core.node.NodeModel.executeModel(NodeModel.java:605)
+	at org.knime.core.node.Node.invokeFullyNodeModelExecute(Node.java:1331)
+	at org.knime.core.node.Node.execute(Node.java:1038)
+	at org.knime.core.node.workflow.NativeNodeContainer.performExecuteNode(NativeNodeContainer.java:618)
+	at org.knime.core.node.exec.LocalNodeExecutionJob.mainExecute(LocalNodeExecutionJob.java:98)
+	at org.knime.core.node.workflow.NodeExecutionJob.internalRun(NodeExecutionJob.java:201)
+	at org.knime.core.node.workflow.NodeExecutionJob.run(NodeExecutionJob.java:120)
+	at org.knime.core.util.ThreadUtils$RunnableWithContextImpl.runWithContext(ThreadUtils.java:369)
+	at org.knime.core.util.ThreadUtils$RunnableWithContext.run(ThreadUtils.java:223)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at org.knime.core.util.ThreadPool$MyFuture.run(ThreadPool.java:143)
+	at org.knime.core.util.ThreadPool$Worker.run(ThreadPool.java:277)
+2026-01-14 06:55:39,156 : INFO  : KNIME-Worker-1-CSV Reader 3:1 :  : LocalNodeExecutionJob : CSV Reader : 3:1 : CSV Reader 3:1 End execute (13 secs)
+2026-01-14 06:59:44,153 : ERROR : Thread-2994 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 07:03:33,139 : WARN  : KNIME-Worker-2-Statistics 3:3 :  : Node : Statistics : 3:3 : Maximum number of unique possible values (1000) exceeds for column(s): "ID","Salaire annuel (€)","Ville","Connexion Internet (Mb/s)","Dépenses mensuelles en ligne (€)","Type de musique préférée","Type de sport pratiqué","Marque du véhicule","Type d'animal"
+2026-01-14 07:03:41,163 : INFO  : KNIME-Worker-2-Statistics 3:3 :  : LocalNodeExecutionJob : Statistics : 3:3 : Statistics 3:3 End execute (16 secs)
+2026-01-14 07:05:31,644 : ERROR : Thread-3473 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 07:05:31,741 : ERROR : Thread-3478 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 07:07:04,210 : INFO  : KNIME-Worker-16-Column Filter 3:2 :  : LocalNodeExecutionJob : Column Filter : 3:2 : Column Filter 3:2 End execute (0 secs)
+2026-01-14 07:08:01,824 : WARN  : KNIME-Worker-17-Statistics 3:4 :  : Node : Statistics : 3:4 : Maximum number of unique possible values (1000) exceeds for column(s): "ID","Salaire annuel (€)","Ville"
+2026-01-14 07:08:08,710 : INFO  : KNIME-Worker-17-Statistics 3:4 :  : LocalNodeExecutionJob : Statistics : 3:4 : Statistics 3:4 End execute (15 secs)
+2026-01-14 07:42:23,901 : INFO  : KNIME-Worker-22-Duplicate Row Filter 3:5 :  : LocalNodeExecutionJob : Duplicate Row Filter : 3:5 : Duplicate Row Filter 3:5 End execute (19 secs)
+2026-01-14 10:12:57,939 : INFO  : KNIME-Worker-23-Missing Value 3:6 :  : PMMLPortObject : Missing Value : 3:6 : No mining schema found.
+2026-01-14 10:12:57,940 : INFO  : KNIME-Worker-23-Missing Value 3:6 :  : LocalNodeExecutionJob : Missing Value : 3:6 : Missing Value 3:6 End execute (18 secs)
+2026-01-14 10:16:54,341 : INFO  : KNIME-Worker-24-Missing Value 3:6 :  : PMMLPortObject : Missing Value : 3:6 : No mining schema found.
+2026-01-14 10:16:54,342 : INFO  : KNIME-Worker-24-Missing Value 3:6 :  : LocalNodeExecutionJob : Missing Value : 3:6 : Missing Value 3:6 End execute (17 secs)
+2026-01-14 10:18:39,363 : WARN  : KNIME-Worker-25-Statistics 3:3 :  : Node : Statistics : 3:3 : Maximum number of unique possible values (1000) exceeds for column(s): "ID","Salaire annuel (€)","Ville","Connexion Internet (Mb/s)","Dépenses mensuelles en ligne (€)","Type de musique préférée","Type de sport pratiqué","Marque du véhicule","Type d'animal"
+2026-01-14 10:18:47,067 : INFO  : KNIME-Worker-25-Statistics 3:3 :  : LocalNodeExecutionJob : Statistics : 3:3 : Statistics 3:3 End execute (17 secs)
+2026-01-14 10:21:41,642 : INFO  : KNIME-Worker-34-Duplicate Row Filter 3:5 :  : LocalNodeExecutionJob : Duplicate Row Filter : 3:5 : Duplicate Row Filter 3:5 End execute (1 min, 35 secs)
+2026-01-14 10:22:22,972 : ERROR : Thread-8679 :  : KnimeBrowserView :  :  : %cerror%c RPC Client:: Error RPC request 
+      background: #c0392b;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      Error: Failed to get port view
+ * No port view available at index 1 for current state of node Statistics 3:3. (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 10:22:22,977 : ERROR : Thread-8681 :  : KnimeBrowserView :  :  : %cerror%c UIExtension Lifecycle :: failed to initialize 
+      background: #c0392b;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      [object Object] (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 10:22:39,575 : WARN  : KNIME-Worker-39-Statistics 3:3 :  : Node : Statistics : 3:3 : Maximum number of unique possible values (1000) exceeds for column(s): "ID","Salaire annuel (€)","Ville","Connexion Internet (Mb/s)","Dépenses mensuelles en ligne (€)","Type de musique préférée","Type de sport pratiqué","Marque du véhicule","Type d'animal"
+2026-01-14 10:22:47,202 : INFO  : KNIME-Worker-39-Statistics 3:3 :  : LocalNodeExecutionJob : Statistics : 3:3 : Statistics 3:3 End execute (19 secs)
+2026-01-14 10:24:26,040 : ERROR : Thread-9227 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 10:24:33,057 : ERROR : Thread-9243 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 10:24:45,551 : WARN  : comm-pool-thread-16 :  : Node : Number to String : 3:7 : No columns selected.
+2026-01-14 10:25:17,258 : INFO  : KNIME-Worker-52-Number to String 3:7 :  : LocalNodeExecutionJob : Number to String : 3:7 : Number to String 3:7 End execute (8 secs)
+2026-01-14 10:26:09,749 : ERROR : Thread-9459 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 10:28:32,325 : ERROR : Thread-9527 :  : KnimeBrowserView :  :  : %cerror%c RPC Client:: Error RPC request 
+      background: #c0392b;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      Error: Failed to get port view
+ * No port view available at index 1 for current state of node Statistics 3:4. (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 10:28:32,326 : ERROR : Thread-9529 :  : KnimeBrowserView :  :  : %cerror%c UIExtension Lifecycle :: failed to initialize 
+      background: #c0392b;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      [object Object] (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 10:29:00,015 : WARN  : KNIME-Worker-53-Statistics 3:4 :  : Node : Statistics : 3:4 : Maximum number of unique possible values (1000) exceeds for column(s): "ID","Salaire annuel (€)","Ville","Connexion Internet (Mb/s)","Dépenses mensuelles en ligne (€)","Type de musique préférée","Type de sport pratiqué","Marque du véhicule","Type d'animal"
+2026-01-14 10:29:07,240 : INFO  : KNIME-Worker-53-Statistics 3:4 :  : LocalNodeExecutionJob : Statistics : 3:4 : Statistics 3:4 End execute (18 secs)
+2026-01-14 10:30:23,053 : ERROR : Thread-10180 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 10:30:26,503 : WARN  : KNIME-Worker-58-Statistics 3:3 :  : Node : Statistics : 3:3 : Maximum number of unique possible values (1000) exceeds for column(s): "ID","Salaire annuel (€)","Ville","Connexion Internet (Mb/s)","Dépenses mensuelles en ligne (€)","Type de musique préférée","Type de sport pratiqué","Marque du véhicule","Type d'animal"
+2026-01-14 10:30:34,281 : INFO  : KNIME-Worker-58-Statistics 3:3 :  : LocalNodeExecutionJob : Statistics : 3:3 : Statistics 3:3 End execute (20 secs)
+2026-01-14 10:33:25,537 : INFO  : KNIME-Worker-68-Statistics View 3:8 :  : LocalNodeExecutionJob : Statistics View : 3:8 : Statistics View 3:8 End execute (20 secs)
+2026-01-14 10:33:52,542 : ERROR : comm-pool-thread-25 :  : InitialDataService : Statistics View : 3:8 : Cannot load from object array because the return value of "org.knime.base.views.node.BaseViewsNodeModel.getInternalTables()" is null
+java.lang.NullPointerException: Cannot load from object array because the return value of "org.knime.base.views.node.BaseViewsNodeModel.getInternalTables()" is null
+	at org.knime.base.views.node.statistics.StatisticsNodeFactory.lambda$3(StatisticsNodeFactory.java:111)
+	at org.knime.core.webui.node.view.table.TableViewUtil.lambda$7(TableViewUtil.java:231)
+	at org.knime.core.webui.data.InitialDataService.getInitialData(InitialDataService.java:116)
+	at org.knime.core.webui.node.DataServiceManager.callInitialDataService(DataServiceManager.java:130)
+	at org.knime.gateway.api.entity.UIExtensionEnt.<init>(UIExtensionEnt.java:124)
+	at org.knime.gateway.api.entity.NodeViewEnt.<init>(NodeViewEnt.java:177)
+	at org.knime.gateway.api.entity.NodeViewEnt.create(NodeViewEnt.java:105)
+	at org.knime.gateway.api.entity.NodeViewEnt.create(NodeViewEnt.java:124)
+	at org.knime.gateway.impl.webui.service.DefaultNodeService.getNodeView(DefaultNodeService.java:268)
+	at org.knime.gateway.impl.webui.service.DefaultNodeService.getNodeView(DefaultNodeService.java:238)
+	at org.knime.gateway.impl.webui.service.DefaultNodeService.getNodeView(DefaultNodeService.java:1)
+	at org.knime.gateway.impl.webui.jsonrpc.service.JsonRpcNodeServiceWrapper.getNodeView(JsonRpcNodeServiceWrapper.java:177)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:478)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:349)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:274)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:242)
+	at org.knime.gateway.impl.jsonrpc.JsonRpcRequestHandler.handle(JsonRpcRequestHandler.java:106)
+	at org.knime.ui.java.browser.lifecycle.Init.lambda$16(Init.java:336)
+	at com.equo.comm.common.MessageHandler.processReceivedEventMessage(MessageHandler.java:131)
+	at com.equo.comm.ee.provider.service.ChromiumService.receiveMessage(ChromiumService.java:98)
+	at com.equo.comm.ee.provider.CommunicationManagerChromiumImpl.receiveMessage(CommunicationManagerChromiumImpl.java:48)
+	at com.equo.chromium.swt.internal.spi.CommRouterHandler.handleRequest(CommRouterHandler.java:33)
+	at com.equo.chromium.swt.internal.spi.CommRouterHandler.lambda$1(CommRouterHandler.java:51)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-01-14 10:37:51,344 : INFO  : KNIME-Worker-69-Statistics View 3:8 :  : LocalNodeExecutionJob : Statistics View : 3:8 : Statistics View 3:8 End execute (3 mins, 51 secs)
+2026-01-14 10:38:10,237 : INFO  : KNIME-Worker-70-Statistics View 3:9 :  : LocalNodeExecutionJob : Statistics View : 3:9 : Statistics View 3:9 End execute (3 mins, 30 secs)
+2026-01-14 10:58:32,304 : ERROR : Thread-12725 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 10:59:47,020 : WARN  : comm-pool-thread-30 :  : Node : Row Filter : 3:10 : At least one filter criterion is needed.
+2026-01-14 11:00:56,374 : INFO  : KNIME-Worker-79-Row Filter 3:10 :  : LocalNodeExecutionJob : Row Filter : 3:10 : Row Filter 3:10 End execute (8 secs)
+2026-01-14 11:01:38,400 : INFO  : KNIME-Worker-81-Row Filter 3:10 :  : LocalNodeExecutionJob : Row Filter : 3:10 : Row Filter 3:10 End execute (16 secs)
+2026-01-14 11:19:42,004 : INFO  : KNIME-Worker-82-Rule Engine 3:11 :  : LocalNodeExecutionJob : Rule Engine : 3:11 : Rule Engine 3:11 End execute (7 secs)
+2026-01-14 11:24:44,906 : ERROR : Thread-14572 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 11:24:52,922 : ERROR : Thread-14578 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 11:24:53,837 : ERROR : Thread-14594 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 11:25:09,155 : ERROR : Thread-14709 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 11:25:28,950 : INFO  : KNIME-Worker-83-Normalizer 3:12 :  : LocalNodeExecutionJob : Normalizer : 3:12 : Normalizer 3:12 End execute (25 secs)
+2026-01-14 11:25:34,274 : ERROR : Thread-14784 :  : KnimeBrowserView :  :  : ResizeObserver loop completed with undelivered notifications. (source: https://org.knime.ui.java/index.html#/workflow/TP2_MARKTING_32a5dcdf-e036-4a43-8e60-13852fcb0214/root?version; line: 0)
+2026-01-14 11:45:01,058 : INFO  : KNIME-Worker-84-Rule Engine 3:11 :  : LocalNodeExecutionJob : Rule Engine : 3:11 : Rule Engine 3:11 End execute (7 secs)
+2026-01-14 12:00:36,348 : WARN  : comm-pool-thread-34 :  : Node : CSV Writer : 3:13 : Please specify a file
+2026-01-14 12:08:44,955 : ERROR : main :  : SaveProjectCopy :  :  : No destion was picked
+2026-01-14 12:08:44,955 : ERROR : main :  : SaveProjectCopy :  :  : No valid destination could be picked
+2026-01-14 12:19:16,125 : INFO  : KNIME-Worker-85-Normalizer 3:12 :  : LocalNodeExecutionJob : Normalizer : 3:12 : Normalizer 3:12 End execute (25 secs)
+2026-01-14 12:19:33,874 : INFO  : KNIME-Worker-86-CSV Writer 3:13 :  : LocalNodeExecutionJob : CSV Writer : 3:13 : CSV Writer 3:13 End execute (17 secs)
+2026-01-14 13:01:11,419 : INFO  : KNIME shutdown hooks - org.knime.core.util.FileUtil$$Lambda/0x000078acd8414ae8 :  : FileUtil :  :  : Deleting 838 temporary files.
+2026-01-14 17:06:35,336 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 17:06:35,337 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : # Welcome to KNIME Analytics Platform v5.9.0.v202512101359 (Build December 10, 2025)    #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : # Based on Eclipse, http://www.eclipse.org                                              #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : # Copyright by KNIME AG, Zurich, Switzerland and others.                                #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : # Website: http://www.knime.com                                                         #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : # E-mail: contact@knime.com                                                             #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : #                                                                                       #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : # For more details see the KNIME log file:                                              #
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : # /home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/knime.log
+2026-01-14 17:06:35,338 : INFO  : main :  : NodeLogger :  :  : #---------------------------------------------------------------------------------------#
+2026-01-14 17:06:35,358 : INFO  : main :  : NodeLogger :  :  : # logging date=mer. janv. 14 17:06:35 CET 2026
+2026-01-14 17:06:35,358 : INFO  : main :  : NodeLogger :  :  : # java.version=21.0.9
+2026-01-14 17:06:35,358 : INFO  : main :  : NodeLogger :  :  : # java.vm.version=21.0.9+10-LTS
+2026-01-14 17:06:35,359 : INFO  : main :  : NodeLogger :  :  : # java.vendor=Eclipse Adoptium
+2026-01-14 17:06:35,359 : INFO  : main :  : NodeLogger :  :  : # os.name=Linux
+2026-01-14 17:06:35,359 : INFO  : main :  : NodeLogger :  :  : # os.arch=amd64
+2026-01-14 17:06:35,359 : INFO  : main :  : NodeLogger :  :  : # number of CPUs=8
+2026-01-14 17:06:35,359 : INFO  : main :  : NodeLogger :  :  : # assertions=off
+2026-01-14 17:06:35,361 : INFO  : main :  : NodeLogger :  :  : # host=layedev-HP-ProBook-440-G8-Notebook-PC
+2026-01-14 17:06:35,363 : INFO  : main :  : NodeLogger :  :  : # username=layedev
+2026-01-14 17:06:35,363 : INFO  : main :  : NodeLogger :  :  : # max mem=2048MB
+2026-01-14 17:06:35,363 : INFO  : main :  : NodeLogger :  :  : # application=org.knime.product.KNIME_APPLICATION
+2026-01-14 17:06:35,370 : INFO  : main :  : NodeLogger :  :  : # KNID=11-a27c28f87a008434-01-8d8185e61bfe2ab6
+2026-01-14 17:06:35,370 : INFO  : main :  : NodeLogger :  :  : #########################################################################################
+2026-01-14 17:06:37,488 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_database_drivers.txt' does not exist.
+2026-01-14 17:06:37,488 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_database_urls.txt' does not exist.
+2026-01-14 17:06:38,983 : INFO  : Node Repository Initializer :  : DatabaseDriverLoader :  :  : Could not load 'libJdbcOdbc.so' library which is known to be a problem under Linux when using the 'sun.jdbc.odbc.JdbcOdbcDriver'; that is, the driver is not loaded.
+2026-01-14 17:06:39,170 : INFO  : Node Repository Initializer :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_string2date-formats.txt' does not exist.
+2026-01-14 17:06:39,222 : ERROR : ForkJoinPool.commonPool-worker-1 :  : WelcomeAPEndpoint :  :  : Calling welcome page endpoint failed:HTTPS hostname wrong:  should be <tips-and-tricks.knime.com>
+java.io.IOException: HTTPS hostname wrong:  should be <tips-and-tricks.knime.com>
+	at java.base/sun.net.www.protocol.https.HttpsClient.checkURLSpoofing(Unknown Source)
+	at java.base/sun.net.www.protocol.https.HttpsClient.afterConnect(Unknown Source)
+	at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(Unknown Source)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(Unknown Source)
+	at org.knime.product.rcp.intro.WelcomeAPEndpoint.performRequest(WelcomeAPEndpoint.java:179)
+	at org.knime.product.rcp.intro.WelcomeAPEndpoint.requestCategories(WelcomeAPEndpoint.java:147)
+	at org.knime.product.rcp.intro.WelcomeAPEndpoint.lambda$0(WelcomeAPEndpoint.java:119)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.exec(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(Unknown Source)
+2026-01-14 17:06:39,270 : INFO  : main :  : ProcessWatchdog :  :  : KNIME Process Watchdog memory limit not configured
+2026-01-14 17:06:39,271 : INFO  : main :  : ProcessWatchdog :  :  : External process memory watchdog is disabled, because the memory limit is set to -1
+2026-01-14 17:06:39,635 : INFO  : main :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_org.knime.kerberos.name.txt' does not exist.
+2026-01-14 17:06:40,254 : INFO  : Thread-167 :  : KnimeBrowserView :  :  : %cinfo%c Injecting global logger 
+      background: #00BCD4;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 17:06:40,531 : ERROR : KNIME-Worker-0 :  : DesktopAPUtil :  :  : Could not check for updates
+java.io.IOException: HTTPS hostname wrong:  should be <update.knime.com>, while checking updates for site at "https://update.knime.com/partner/latest".
+	at org.knime.core.eclipseUtil.UpdateChecker.checkForNewRelease(UpdateChecker.java:200)
+	at org.knime.product.rcp.intro.UpdateDetector.checkForNewRelease(UpdateDetector.java:97)
+	at org.knime.ui.java.util.DesktopAPUtil.checkForUpdate(DesktopAPUtil.java:221)
+	at org.knime.gateway.impl.webui.UpdateStateProvider.lambda$0(UpdateStateProvider.java:86)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at org.knime.core.util.ThreadPool$MyFuture.run(ThreadPool.java:143)
+	at org.knime.core.util.ThreadPool$Worker.run(ThreadPool.java:277)
+Caused by: java.io.IOException: HTTPS hostname wrong:  should be <update.knime.com>
+	at java.base/sun.net.www.protocol.https.HttpsClient.checkURLSpoofing(Unknown Source)
+	at java.base/sun.net.www.protocol.https.HttpsClient.afterConnect(Unknown Source)
+	at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(Unknown Source)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(Unknown Source)
+	at org.knime.core.eclipseUtil.UpdateChecker.checkForNewRelease(UpdateChecker.java:182)
+	... 7 more
+2026-01-14 17:06:41,308 : WARN  : comm-pool-thread-2 :  : JsonRpcErrorResolver :  :  : An unexpected json rpc error occurred
+java.lang.IllegalStateException: K-AI is not connected to a hub. Select a hub on the AI Assistant preference page.
+	at org.knime.ai.assistant.java.UiStringsUtils.getUiStrings(UiStringsUtils.java:84)
+	at org.knime.ai.assistant.java.ChatBackend.getUiStrings(ChatBackend.java:207)
+	at java.base/java.util.Optional.map(Unknown Source)
+	at org.knime.gateway.impl.webui.service.DefaultKaiService.getUiStrings(DefaultKaiService.java:158)
+	at org.knime.gateway.impl.webui.jsonrpc.service.JsonRpcKaiServiceWrapper.getUiStrings(JsonRpcKaiServiceWrapper.java:104)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.invoke(JsonRpcBasicServer.java:478)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleObject(JsonRpcBasicServer.java:349)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleJsonNodeRequest(JsonRpcBasicServer.java:274)
+	at com.googlecode.jsonrpc4j.JsonRpcBasicServer.handleRequest(JsonRpcBasicServer.java:242)
+	at org.knime.gateway.impl.jsonrpc.JsonRpcRequestHandler.handle(JsonRpcRequestHandler.java:106)
+	at org.knime.ui.java.browser.lifecycle.Init.lambda$16(Init.java:336)
+	at com.equo.comm.common.MessageHandler.processReceivedEventMessage(MessageHandler.java:131)
+	at com.equo.comm.ee.provider.service.ChromiumService.receiveMessage(ChromiumService.java:98)
+	at com.equo.comm.ee.provider.CommunicationManagerChromiumImpl.receiveMessage(CommunicationManagerChromiumImpl.java:48)
+	at com.equo.chromium.swt.internal.spi.CommRouterHandler.handleRequest(CommRouterHandler.java:33)
+	at com.equo.chromium.swt.internal.spi.CommRouterHandler.lambda$1(CommRouterHandler.java:51)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+2026-01-14 17:06:41,385 : ERROR : Thread-1174 :  : KnimeBrowserView :  :  : %cerror%c RPC Client:: Error RPC request 
+      background: #c0392b;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      Error: K-AI is not connected to a hub. Select a hub on the AI Assistant preference page. (source: https://org.knime.ui.java/assets/index-DGMdmAxP.js; line: 105)
+2026-01-14 17:06:42,544 : INFO  : Node Repository Initializer :  : StringHistory :  :  : History file '/home/layedev/Documents/miashs2026/semestre 2/markting quantitatif/data_viz/.metadata/knime/history_createFileNameHistoryKey.txt' does not exist.
+2026-01-14 17:06:42,558 : INFO  : Node Repository Initializer :  : GroupByNodeFactory :  :  : Modern dialog for GroupBy node can be enabled via system property "org.knime.base.node.preproc.groupby.dialog". Note: This property will be removed in a future version.
+
+2026-01-14 17:06:42,613 : INFO  : Node Repository Initializer :  : Pivot2NodeFactory :  :  : Modern dialog for Pivot node can be enabled via system property "org.knime.base.node.preproc.groupby.dialog". Note: This property will be removed in a future version.
+
+2026-01-14 17:06:43,554 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 17:06:43,577 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 17:06:43,585 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=oracle, name=Oracle, description=null)
+2026-01-14 17:06:43,587 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 17:06:43,595 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 17:06:43,596 : INFO  : Node Repository Initializer :  : DBDriverRegistry :  :  : Could not find any driver for DBType: DBType(id=vertica, name=Vertica, description=Vertica Analytics Platform)
+2026-01-14 17:12:21,604 : INFO  : KNIME shutdown hooks - org.knime.core.util.FileUtil$$Lambda/0x00007f1c64412eb0 :  : FileUtil :  :  : Deleting 1 temporary files.

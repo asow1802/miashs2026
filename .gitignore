@@ -1,0 +1,31 @@
+
+# Environnements Python
+# Environnements
+venv/
+.venv/
+*/venv/
+*/.venv/
+
+# Logiciels
+knime_*/
+*.jar
+*.zip
+*.tar.gz
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Données lourdes
+*.csv
+*.xlsx
+*.h5
+*.npy
+
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+programmation/cours/pandas/listings.csv

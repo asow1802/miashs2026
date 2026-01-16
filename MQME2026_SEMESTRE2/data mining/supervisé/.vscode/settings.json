@@ -1,0 +1,5 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": [],
+    "python.defaultInterpreterPath": "/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/data mining/supervisé/venv/bin/python"
+}

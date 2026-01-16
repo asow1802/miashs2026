@@ -1,0 +1,152 @@
+---
+title: "TD1"
+author: "Ablaye SOW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+# 1. Importer les données dans R et vérifier leur structure.
+```{r setup, include=FALSE}
+data = read.table("/home/layedev/Documents/miashs2026/semestre 2/analyse de données 2/Lille.txt", header = TRUE)
+data$Precipitations = data$Precipitations/10
+#head(data, 20)
+print(summary(data))
+```
+
+# 2. Représenter graphiquement la série temporelle des précipitations mensuelles.
+
+
+```{r cars}
+date <- as.Date(sprintf("%d-%02d-01", data$Annees, data$Mois))
+plot(date, data$Precipitations, type = "l")
+```
+
+# 3. Tracer un histogramme des données.
+
+
+```{r}
+hist(data$Precipitations, breaks = 40)
+```
+
+
+
+## 2 Construction des maxima par blocs
+```{r}
+nbr_annee = length(unique(data$Annees))
+annees = unique(data$Annees)
+val_max_annee = matrix(data=NA, nrow = nbr_annee, ncol = 1)
+
+for (i in 1:nbr_annee) {
+    val_max_annee[i] = max(data[which(data$Annees == annees[i] ), which(colnames(data) == "Precipitations")])
+}
+
+hist(val_max_annee, breaks = 20)
+length(val_max_annee)
+print(val_max_annee)
+```
+```{r}
+plot(annees, val_max_annee, type = "b")
+```
+
+## 3 Ajustement d’un modèle GEV
+# 1. Charger le package evd.
+```{r}
+install.packages("evd")
+library(evd)
+```
+
+# 2. Ajuster un modèle GEV aux maxima annuels par maximum de vraisemblance.
+```{r}
+params = fgev(val_max_annee)
+print(params)
+```
+
+```{r}
+# Paramètres choisis
+mu <- 9.44296      # Position
+sigma <- 2.07450    # Échelle
+xi <- -0.09866     # Forme (positif = queue lourde)
+
+# Définition de la plage de données (axe x)
+x <- seq(0, 80, length = 500)
+
+# Calcul de la densité
+y <- dgev(x, loc = mu, scale = sigma, shape = xi)
+
+# Tracé
+plot(x, y, type = "l", lwd = 2, col = "blue",
+     main = "Densité de la loi GEV",
+     xlab = "Valeurs de x", ylab = "Densité f(x)")
+grid()
+```
+
+```{r}
+"
+xi négatif :  loi de weibul
+"
+# Vos paramètres connus
+mu <- 9.44296      # Position
+sigma <- 2.07450    # Échelle
+xi <- -0.09866     # Forme (positif = queue lourde)
+
+# 1. Calculer la probabilité P(X <= 30)
+prob <- pgev(30, loc = mu, scale = sigma, shape = xi)
+
+# 2. Calculer le quantile (ex: Niveau de retour pour une proba de 0.99)
+valeur <- qgev(0.99, loc = mu, scale = sigma, shape = xi)
+
+# 3. Calculer la densité de probabilité f(x)
+densite <- dgev(30, loc = mu, scale = sigma, shape = xi)
+```
+# 4 Intervalles de confiance et incertitude
+# Extraire la matrice de variance-covariance des estimateurs.
+```{r}
+params$var.cov
+```
+# Calculer les intervalles de confiance à 95 % des paramètres.
+```{r}
+set.seed(123)
+# Afficher les intervalles de confiance à 95%
+#confint(params)
+
+se = sqrt(diag(params$var.cov))
+est = params$estimate
+IC = cbind(
+  estimate = est,
+  lovew  = est - 1.96*se,
+  upper = est + 1.96*se
+)
+print(IC)
+```
+
+"
+Xi est la valeur la plus difficile à estimer
+Par conclusion, on constate qu'on est proche de la loi de Gumbel
+"
+## 5 Niveaux de retour
+# 1. Calculer les niveaux de retour associés à des périodes de :T =  20 et 100
+```{r}
+p1 = 1/20
+p2 = 1/100
+
+
+# Calcul des niveaux de retour
+z_20 <- qgev(1 - p1, loc = mu, scale = sigma, shape = xi)
+print(z_20)
+
+z_100 <- qgev(1 - p2, loc = mu, scale = sigma, shape = xi)
+print(z_100)
+```
+
+"
+Ce la signifie qu'on dépasse 14.78391 tous les 20 ans en moyenne
+"
+# 6 Incertitude sur les niveaux de retour
+
+```{r}
+RL = function(theta, T){
+  
+}
+
+# on trouve 13.81 15.75 et 15.38 18.84
+
+```
