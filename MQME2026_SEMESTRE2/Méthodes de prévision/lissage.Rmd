@@ -5,26 +5,67 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+namev = c(1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007)
+data =  c(7.3, 7.1, 7, 7.2, 7, 6.9, 6.3, 6.5, 6.5, 6.3, 6.6, 7)
+plot(namev, data,  type = "b")
 ```
 
-## R Markdown
+## R 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r}
+alpha = 0.9
+Y_hate = c(7.3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+for (t in 2:13) {
+  Y_hate[t] = (alpha)*data[t-1] + (1-alpha)*Y_hate[t-1]
+}
 
-```{r cars}
-summary(cars)
+print(Y_hate)
+
+alpha = c(0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1)
+Prev_2008 = c(6.957, 0, 0, 0, 0, 0, 0, 0, 0)
+ i = 0
+for (a in alpha) {
+  for (k in 0:length(data)-1) {
+    Prev_2008[i] = Prev_2008[i+1] + ((1-alpha)^k)*data[length(data)-k]
+  }
+  Prev_2008[i] = Prev_2008[i]*a
+  i = i+1
+}
+print(Prev_2008)
 ```
 
 ## Including Plots
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+namev = 1996:2007
+data =  c(1.8, 2, 2.2, 2.3, 2.4, 2.4, 2.6, 2.6, 2.8, 3.4, 3.6, 3.6)
+plot(namev, data,  type = "b")
+
+
+alpha = 0.85
+lamda = 0.3
+St = c(1.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+Tt = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+Et = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+Et_Yt = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+prevision = c(1.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+for (t in 2:12) {
+  St[t] = (alpha)*data[t] + (1-alpha)*(St[t-1]+Tt[t-1])
+  Tt[t] = lamda*(St[t]-St[t-1]) + (1-lamda)*Tt[t-1]
+  prevision[t] = St[t-1]+Tt[t-1]  
+  Et[t] = data[t] - prevision[t]
+  Et_Yt[t] = abs(Et[t]/data[t])
+}
+print(St)
+print(Tt)
+t = 1:12
+
+tableau = data.frame(cbind(t, data, St, Tt, prevision, Et, Et_Yt))
+View(tableau)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
