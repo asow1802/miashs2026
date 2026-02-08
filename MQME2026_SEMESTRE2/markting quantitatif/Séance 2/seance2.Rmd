@@ -1,0 +1,60 @@
+---
+title: "seance1"
+author: "Ablaye SOW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+data = read.csv("/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/markting quantitatif/Séance 2/last_event.csv", header = TRUE)
+
+View(data)
+data_clean = data
+
+data_clean$id_client = NULL
+data_clean$event_flag = NULL
+data_clean$X = NULL
+data_clean$event_month = NULL
+data_clean$event_week = NULL
+data_clean$participe = NULL
+quantitatif = data_clean[,sapply(data_clean, is.numeric)]
+qualitatif = sapply(data_clean, is.character)
+
+```
+
+## 
+
+
+```{r cars}
+summary(data)
+
+```
+
+## Including Plots
+
+
+```{r}
+print(names(quantitatif))
+
+```
+
+
+```{r}
+par(mfrow = c(1,1))
+for (quanti in names(quantitatif)) {
+  hist(quantitatif[[quanti]], xlab = quanti)
+}
+```
+```{r}
+par(mfrow = c(1,1))
+for (quanti in names(quantitatif)) {
+  boxplot(quantitatif[[quanti]], xlab = quanti)
+}
+
+```
+
+
+
+```{r}
+
+```

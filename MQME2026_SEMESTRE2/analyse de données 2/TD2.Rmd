@@ -1,0 +1,85 @@
+---
+title: "TD1"
+author: "Ablaye SOW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+# 1. Importer les données dans R et vérifier leur structure.
+```{r setup, include=FALSE}
+data = read.table("/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/analyse de données 2/Lille.txt", header = TRUE)
+data$Precipitations = data$Precipitations/10
+#head(data, 20)
+print(summary(data))
+```
+
+# 2. Représenter graphiquement la série temporelle des précipitations mensuelles.
+
+
+```{r cars}
+date <- as.Date(sprintf("%d-%02d-01", data$Annees, data$Mois))
+plot(date, data$Precipitations, type = "l")
+```
+
+# 3.
+
+
+```{r}
+hist(data$Precipitations, breaks = 40)
+```
+
+
+
+## 2.1 
+```{r}
+install.packages("evd")
+library(evd)
+```
+```{r}
+pdf("MRLPlot.pdf")
+mrlplot(data$Precipitations, main="")
+dev.off()
+
+## seuil = 11,5 ; 12, 12,5
+```
+```{r}
+```
+
+## 3 
+# 1. 
+```{r}
+
+```
+
+# 2.
+```{r}
+params = fgev(val_max_annee)
+print(params)
+```
+
+```{r}
+
+```
+# 4 
+# 
+```{r}
+params$var.cov
+```
+# 
+```{r}
+
+```
+
+
+
+```{r}
+
+
+
+```
+
+
+
+
+```{r}
+
+```

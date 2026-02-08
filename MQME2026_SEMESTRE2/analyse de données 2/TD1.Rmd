@@ -6,10 +6,12 @@ output: html_document
 ---
 # 1. Importer les données dans R et vérifier leur structure.
 ```{r setup, include=FALSE}
-data = read.table("/home/layedev/Documents/miashs2026/semestre 2/analyse de données 2/Lille.txt", header = TRUE)
+data = read.table("/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/analyse de données 2/Lille.txt", header = TRUE)
 data$Precipitations = data$Precipitations/10
 #head(data, 20)
 print(summary(data))
+install.packages("evd")
+library(evd)
 ```
 
 # 2. Représenter graphiquement la série temporelle des précipitations mensuelles.
@@ -141,12 +143,80 @@ print(z_100)
 Ce la signifie qu'on dépasse 14.78391 tous les 20 ans en moyenne
 "
 # 6 Incertitude sur les niveaux de retour
+# 1. Approximation des niveaux de retour
 
 ```{r}
-RL = function(theta, T){
-  
+# Fonction niveau de retour
+
+
+RL <- function(theta, T) {
+  qgev(1 - 1/T,
+       loc = theta[1],
+       scale = theta[2],
+       shape = theta[3])
 }
 
-# on trouve 13.81 15.75 et 15.38 18.84
+
+V <- as.matrix(params$var.cov)
+dim(V)
+
+
+# Gradient numérique (corrigé)
+grad_num <- function(f, theta, T, eps = 1e-6) {
+  p <- length(theta)
+  g <- numeric(p)
+
+  for (j in 1:p) {
+    th1 <- theta
+    th2 <- theta
+    th1[j] <- th1[j] + eps
+    th2[j] <- th2[j] - eps
+
+    g[j] <- (f(th1, T) - f(th2, T)) / (2 * eps)
+  }
+
+  as.numeric(g)
+}
+
+
+
+# IC Delta pour un niveau de retour
+delta_ic_rl <- function(T) {
+
+  theta <- c(mu, sigma, xi)
+
+  g <- grad_num(RL, theta, T)
+
+  var_rl <- as.numeric(t(g) %*% V %*% g)
+  se_rl <- sqrt(var_rl)
+
+  z <- RL(theta, T)
+
+  c(
+    estimate = z,
+    lower = z - 1.96 * se_rl,
+    upper = z + 1.96 * se_rl
+  )
+}
+
+
+
+IC_RL_20 <- delta_ic_rl(20)
+IC_RL_100 <- delta_ic_rl(100)
+
+
+IC_RL_20
+IC_RL_100
+```
+
+
+
+
+```{r}
+# 10. Validation du modèle GEV avec glmplot
+
+library(evd)
+plot(params)
+
 
 ```
