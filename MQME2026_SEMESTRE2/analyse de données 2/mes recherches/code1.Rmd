@@ -1,0 +1,153 @@
+---
+title: "recherche 1"
+author: "Ablaye SOW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Fonction de densité de la loi de GEV
+```{r cars}
+loigev = function(mu, sigma, gamma, x) {
+    exp(-(1+gamma*(x-mu)/sigma)^(-1/gamma))
+}
+
+x = seq(0, 10, by=0.1)
+plot(x, loigev(4.197, 3.068, -0.440, x), type="l", col="blue", lwd=2, xlab="x", ylab="loigev(x)")   
+```
+
+```{r cars}
+x = rnorm(1000, mean=4.197, sd=3.068)
+years = 1:1000
+plot(years,x, type="l", col="blue", lwd=2, xlab="Années", ylab="x")   
+```
+You can also embed plots, for example:
+## Estimation des paramètres de la loi de GEV
+```{r}
+install.packages("evd")
+library(evd)
+params = fgev(x)
+print(params)
+```
+
+## Estimation du niveau de retour
+```{r}
+niveau_retour = function(mu, sigma, gamma, p) {
+    if (gamma != 0) {
+        mu - (sigma/gamma) * (1 - (-log(1-p))^(-gamma))
+    } else {
+        mu - sigma * log(-log(1-p))
+    }
+}
+```
+## Niveau de retour
+```{r}
+p = 0.99
+
+niveau_retour(params$estimate[1], params$estimate[2], params$estimate[3], p)
+```
+
+## Delta method
+```{r}
+delta_zp = function(mu, sigma, gamma, p) {
+    if (gamma != 0) {
+        matrix(c(1, (-1/gamma) * (1 - (-log(1-p))^(-gamma)), 1 - (-log(1-p))^(-gamma) * log(-log(1-p))))
+    } else {
+        matrix(c(1, -log(-log(1-p)), 0))
+    }
+}
+```
+## Variance du niveau de retour
+```{r}
+var_niveau_retour = function(mu, sigma, gamma, p, cov_matrix) {
+    delta = delta_zp(mu, sigma, gamma, p)
+    t(delta) %*% cov_matrix %*% delta
+}
+```
+## Variance du niveau de retour pour p = 0.99 sur la base de données x  
+```{r}
+p = 0.99
+cov_matrix = vcov(params)
+variance_zp = var_niveau_retour(params$estimate[1], params$estimate[2], params$estimate[3], p, cov_matrix)
+variance_zp
+```
+## Intervalle de confiance pour le niveau de retour
+```{r}
+z_score = qnorm(0.975)  # pour un intervalle de confiance à 95%
+ic_zp = function(mu, sigma, gamma, p, cov_matrix) {
+    zp = niveau_retour(mu, sigma, gamma, p)
+    var_zp = var_niveau_retour(mu, sigma, gamma, p, cov_matrix)
+    lower_bound = zp - z_score * sqrt(var_zp)
+    upper_bound = zp + z_score * sqrt(var_zp)
+    c(lower_bound, upper_bound)
+}
+```
+
+## Intervalle de confiance pour le niveau de retour à p = 0.99
+```{r}
+ic_zp(params$estimate[1], params$estimate[2], params$estimate[3], p, cov_matrix)
+```
+## profil de vraisemblance
+```{r}
+loc_likelihood = function(mu, sigma, gamma, data) {
+    -sum(dgev(data, loc=mu, scale=sigma, shape=gamma, log=TRUE))
+}
+profil = loc_likelihood(params$estimate[1], params$estimate[2], params$estimate[3], x)
+print(profil)
+```
+
+### Deuxème partie : DIstribution de pareto généralisée(modèle GPD)
+
+## Fonction de densité de la loi de GPD
+```{r}
+loigpd = function(mu, sigma, gamma, x, threshold) {
+    sig_tild = sigma + gamma * (threshold - mu)
+    if (gamma != 0) {
+        1 - (1+gamma*x/sig_tild)^(-1/gamma)
+    } else {
+        1 - exp(-x/sig_tild)
+    }
+}
+
+plot(x1, loigpd(4.197, 3.068, -0.440, x1, threshold=5), type="l", col="red", lwd=2, xlab="x", ylab="loigpd(x)")
+```
+
+
+## Estimation des paramètres de la loi de GPD
+```{r}
+threshold = 5.4
+excesses = x[x > threshold] - threshold
+params_gpd = fpot(excesses, threshold=0)
+print(params_gpd)
+Variances_gpd = vcov(params_gpd)
+print(Variances_gpd)
+```
+
+## Estimation du niveau de retour pour la loi de GPD
+```{r}
+niveau_retour_gpd = function(threshold, sigma, gamma, m_obs, chi) {
+    if (gamma != 0) {
+        threshold + (sigma/gamma) * ((m_obs * chi)^gamma - 1)
+    } else {
+        threshold + sigma * log(m_obs * chi)
+    }     
+    
+}
+```
+
+## Niveau de retour pour la loi de GPD par la méthode delta
+```{r}
+var_xm_gpd = function(threshold, sigma, gamma, m_obs, chi) {
+    delta_xm = matrix(c(sigma*((m_obs * chi)^(gamma-1)), 1/gamma * ((m_obs * chi)^gamma - 1), (sigma/gamma) * (m_obs * chi)^gamma * log(m_obs * chi)))
+
+    t(delta_xm) %*% Variances_gpd %*% delta_xm   
+} 
+```

@@ -64,8 +64,36 @@ print(St)
 print(Tt)
 t = 1:12
 
-tableau = data.frame(cbind(t, data, St, Tt, prevision, Et, Et_Yt))
-View(tableau)
+#tableau = data.frame(cbind(t, data, St, Tt, prevision, Et, Et_Yt))
+#View(tableau)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+t = -11:0
+library(readxl)
+data = read_excel("/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/Méthodes de prévision/BJ.xlsx")
+head(data)
+date = data$Date
+Y = data$Passagers
+
+a = 0.3
+b = 0.1
+g = 0.9
+
+s = -12
+St = rep(126,12 )
+Tt = rep(0,12)
+It = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+T = -11:0
+for (t in T) {
+  St[t] = (a)*(Y[t]-It[t-s]) + (1-a)*(St[t-1]+Tt[t-1])
+  Tt[t] = b*(St[t]-St[t-1]) + (1-b)*Tt[t-1]
+  It[t] = g*(Y[t]-St[t]) + (1-g)*It[t-s]
+}
+
+#tableau = data.frame(cbind(T, St, Tt))
+#View(tableau)
+
+```

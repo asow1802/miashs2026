@@ -12,6 +12,7 @@ data$Precipitations = data$Precipitations/10
 print(summary(data))
 ```
 
+
 # 2. Représenter graphiquement la série temporelle des précipitations mensuelles.
 
 
@@ -31,8 +32,8 @@ hist(data$Precipitations, breaks = 40)
 
 ## 2.1 
 ```{r}
-install.packages("evd")
-library(evd)
+#install.packages("evd")
+#library(evd)
 ```
 ```{r}
 pdf("MRLPlot.pdf")
@@ -44,42 +45,113 @@ dev.off()
 ```{r}
 ```
 
-## 3 
+## 2.2
 # 1. 
 ```{r}
+s = matrix(rep(11.5, length(unique(data$Annees))), nrow = 108)
+date <- as.Date(sprintf("%d-%02d-01", data$Annees, data$Mois))
+plot(date, data$Precipitations, type = "l")
+plot(unique(data$Annees), s, type = "l", col="red")
 
 ```
 
-# 2.
+# 2.3
 ```{r}
-params = fgev(val_max_annee)
-print(params)
-```
+seuil = 11.5
+fit0 = fpot(data$Precipitations, threshold = seuil, model = "gpd")
+fit0
 
+```
+## 3.2
 ```{r}
+xihate1 = fit0$estimate["shape"]
+sighate1 = fit0$estimate["scale"]
+
+se_xi = fit0$std.err["shape"]
+se_sig = fit0$std.err["scale"]
 
 ```
-# 4 
+# .1
 # 
 ```{r}
-params$var.cov
+
 ```
-# 
+# 3.3
+```{r}
+IC_xi = xihate1 + c(-1, 1)*1.96*se_xi
+IC_sig = sighate1 + c(-1, 1)*1.96*se_sig
+IC_xi
+```
+
+
+## 5.1
+```{r}
+seuil = 11.878
+fit1 = fpot(data$Precipitations, threshold = seuil, model = "gpd")
+fit1
+
+xihate = fit1$estimate["shape"]
+sighate = fit1$estimate["scale"]
+
+se_xi = fit1$std.err["shape"]
+se_sig = fit1$std.err["scale"]
+
+xihate
+sighate
+```
+
+
+
+
+```{r}
+#  nombre de valeurs au dessus du seuil
+print(length(data$Precipitations[data$Precipitations>seuil]))
+nbr_val = length(data$Precipitations[data$Precipitations>seuil])
+taille_data = length(data[,1])
+print(taille_data)
+
+```
+
+
+### 6. Niveau de retour
+# 6.1
+```{r}
+niveau_retour = function(u, sig, xi, zeta, m){
+  if(abs(xi)<1e-8){
+    return(u + sigma*log(zeta*m))
+  }else{
+    return(u+(sig/xi)*((zeta*m)^xi-1))
+  }
+}
+
+nyears = 108
+zeta0 = sum(data$Precipitations>11.5) / length(data$Precipitations) 
+T = 100
+z100 = niveau_retour(11.5, sighate1, xihate1, zeta0, T*12)
+z_100
+# On trouve 17.92
+```
+
+# 6.2
+```{r}
+gfun = function(theta){
+  xi = theta[1]; sigma = theta[1]
+  niveau_retour(seuil, sigma, xi, zeta0, 12*T)
+}
+
+theta_hate = c(xihate, sighate, zeta0)
+grad_g = grad(gfun, theta_hate)
+```
+
 ```{r}
 
 ```
 
-
-
 ```{r}
-
-
 
 ```
-
-
-
-
+## 8
 ```{r}
+plot(fit0)
 
 ```

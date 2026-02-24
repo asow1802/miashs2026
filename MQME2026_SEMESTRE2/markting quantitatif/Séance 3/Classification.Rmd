@@ -1,0 +1,554 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(ggplot2)  # Pour des visualisations avancées
+library(dplyr)    # Pour la manipulation des données
+require(pROC)
+
+#Mise en place
+folder='/Users/emileroussel/Desktop/UNIV/Séance 3/'
+setwd(folder)
+
+file='last_event.csv'
+df <- read.csv(file=file)
+
+df
+```
+Les données utilisées sont déjà nettoyées 
+
+# Préparations de la base de données
+```{r}
+### Changement des types
+df$sexe <- as.factor(df$sexe)
+df$target <- as.factor(df$participe)
+df$last_noshow <- as.factor(df$last_noshow)
+df$event_month <- as.factor(df$event_month)
+df$event_week <- as.factor(df$event_week)
+
+### Sélection des colonnes 
+# Suppression de event_flag & id_client
+drop_cols = c("X", "event_month", "event_week", "participe", "id_client", "event_flag")
+df <- df[, !names(df) %in% drop_cols]
+
+### Suppression des colonnes inutiles à la modélisation
+# Définis les listes de variables en fonction de leur type
+quant_vars <- names(df)[sapply(df, is.numeric)] 
+qual_vars <- names(df)[sapply(df, is.factor)]
+
+# Suppression des variables non pertinentes
+quant_vars <- setdiff(quant_vars, c("X", "participe")) # Retirer : X, participe
+qual_vars  <- setdiff(qual_vars,  "target")            # Retirer : target
+
+# Détermination de la variable cible
+target <- "target"
+
+df
+```
+
+La sélection de variables permet d'automatiser les processus d'analyse qui vont suivre. On va pouvoir dissocier les variables qualitatives, quantitatives, et la variable cible qui reste centrale
+
+
+# Analyse univariée
+```{r}
+# Traçage des histogrammes pour les variables quantitatives
+for (col in quant_vars) {
+  hist(df[[col]], main=col)
+}
+
+# Traçage de pieplot pour les variables qualitatives  
+for (col in qual_vars) {
+  # Création d'une table d'effectif
+  table_counts <- table(df[[col]])
+
+  # Vérifier qu'il y a au moins 2 modalités pour éviter une erreur
+  pie(table_counts, 
+      col = rainbow(length(table_counts)),  # Palette de couleurs
+      main = paste("Répartition de", col))  # Titre dynamique
+}
+
+# Affichage de la variable cible
+table_counts <- table(df[[target]])
+pie(table_counts, 
+    col = rainbow(length(table_counts)),  # Palette de couleurs
+    main = paste("Répartition de", target))  # Titre dynamique
+```
+
+Ce que l'on remarque : 
+1. La plupart des variables numériques ont des distributions en loi de puissance
+
+
+# Analyse bivariée - Variable cible
+```{r}
+# Traçage de pieplot
+for (col in quant_vars) {
+  boxplot(df[[col]] ~ df$target, 
+          col = c("lightblue", "salmon"),  # Couleurs pour les groupes
+          main = paste("Boxplot de", col, "par target"),
+          xlab = "Target", ylab = col)
+}
+
+# Pour chaque variable qualitative
+for (col in qual_vars) {
+  # Créer une table de comptage entre les modalités de la variable qualitative et target
+  table_counts <- table(df[[col]], df$target)
+  
+  # Convertir les comptages en pourcentages pour chaque modalité de la variable qualitative
+  table_percentage <- apply(table_counts, 1, function(x) x * 100 / sum(x, na.rm = TRUE))
+  
+  # Créer un graphique à barres empilées avec les pourcentages
+  # On utilise les couleurs pour distinguer les classes de target
+  barplot(table_percentage, 
+          col = c("lightblue", "salmon"),  # Couleurs pour les classes de target
+          beside = FALSE,  # Empilement des barres
+          main = paste("Répartition de target par", col), # Titre dynamique
+          xlab = col, ylab = "Pourcentage",               # label
+          legend = c("Target 0", "Target 1"), 
+          args.legend = list(x = "topright"))
+}
+```
+# Mesure des intéractions - variable cible
+```{r}
+# Charger les bibliothèques nécessaires
+library(DescTools)  # Pour V de Cramer
+
+# Créer un tableau vide pour stocker les résultats
+results <- data.frame(
+  Variable = character(),
+  Test = character(),
+  p_value = numeric(),
+  Interaction_Measure = character(),
+  Interaction_Value = numeric(),
+  stringsAsFactors = FALSE
+)
+
+# 1. Test statistique et mesure de l'interaction pour les variables quantitatives
+for (col in quant_vars) {
+  # ANOVA pour tester la différence de moyennes entre les groupes définis par 'target' (qui est qualitative)
+  anova_test <- aov(df[[col]] ~ df$target)
+  anova_pvalue <- summary(anova_test)[[1]]$`Pr(>F)`[1]
+  
+  # Mesurer la corrélation entre la variable quantitative et la variable cible (target, qualitative)
+  eta_sq <- summary(anova_test)[[1]][["Sum Sq"]][1] / sum(summary(anova_test)[[1]]["Sum Sq"])  
+  
+  # Ajouter les résultats dans le tableau
+  results <- rbind(results, data.frame(
+    Variable = col,
+    Test = "ANOVA",
+    p_value = anova_pvalue,
+    Interaction_Measure = "Eta",
+    Interaction_Value = eta_sq
+  ))
+}
+
+# 2. Test statistique et mesure de l'interaction pour les variables qualitatives
+for (col in qual_vars) {
+  # Test Khi-2 pour l'indépendance entre la variable qualitative et la variable cible
+  chi_square_test <- chisq.test(table(df[[col]], df$target))
+  chi_pvalue <- chi_square_test$p.value
+  
+  # Mesurer le V de Cramer entre la variable qualitative et la variable cible
+  cramer_v_value <- CramerV(table(df[[col]], df$target))
+  
+  # Ajouter les résultats dans le tableau
+  results <- rbind(results, data.frame(
+    Variable = col,
+    Test = "Khi-2",
+    p_value = chi_pvalue,
+    Interaction_Measure = "V de Cramer",
+    Interaction_Value = cramer_v_value
+  ))
+}
+
+# 3. Afficher le tableau récapitulatif
+print(results)
+```
+# Mesure des intéractions - variables explicatives
+```{r}
+# comparegroup -> Package d'analyse
+# Tableau de résultat
+results_interactions <- data.frame(
+  Var1 = character(),
+  Var2 = character(),
+  Type = character(),
+  Test = character(),
+  p_value = numeric(),
+  Interaction_Measure = character(),
+  Interaction_Value = numeric(),
+  stringsAsFactors = FALSE
+)
+
+### Quali - Quali 
+quant_pairs <- combn(quant_vars, 2, simplify = FALSE)
+for (pair in quant_pairs) {
+  v1 <- pair[1]
+  v2 <- pair[2]
+  
+  test <- cor.test(df[[v1]], df[[v2]], method = "pearson")
+  
+  results_interactions <- rbind(
+    results_interactions,
+    data.frame(
+      Var1 = v1,
+      Var2 = v2,
+      Type = "Quant-Quant",
+      Test = "Pearson",
+      p_value = test$p.value,
+      Interaction_Measure = "Correlation",
+      Interaction_Value = test$estimate
+    )
+  )
+}
+
+### Quanti - Quali
+for (q in quant_vars) {
+  for (c in qual_vars) {
+    
+    aov_test <- aov(df[[q]] ~ df[[c]])
+    aov_sum <- summary(aov_test)[[1]]
+    
+    eta_sq <- aov_sum[1, "Sum Sq"] / sum(aov_sum[, "Sum Sq"])
+    p_val  <- aov_sum[1, "Pr(>F)"]
+    
+    results_interactions <- rbind(
+      results_interactions,
+      data.frame(
+        Var1 = q,
+        Var2 = c,
+        Type = "Quant-Quali",
+        Test = "ANOVA",
+        p_value = as.numeric(p_val),
+        Interaction_Measure = "Eta2",
+        Interaction_Value = as.numeric(eta_sq),
+        stringsAsFactors = FALSE
+      )
+    )
+  }
+}
+
+### Quali - Quali
+qual_pairs <- combn(qual_vars, 2, simplify = FALSE)
+
+library(DescTools)
+
+for (pair in qual_pairs) {
+  v1 <- pair[1]
+  v2 <- pair[2]
+  
+  tab <- table(df[[v1]], df[[v2]])
+  
+  chi_test <- suppressWarnings(chisq.test(tab))
+  cramer <- CramerV(tab)
+  
+  results_interactions <- rbind(
+    results_interactions,
+    data.frame(
+      Var1 = v1,
+      Var2 = v2,
+      Type = "Quali-Quali",
+      Test = "Khi-2",
+      p_value = chi_test$p.value,
+      Interaction_Measure = "Cramer V",
+      Interaction_Value = cramer
+    )
+  )
+}
+
+### Affichage des résultats
+results_interactions
+
+
+```
+
+
+
+
+
+
+# Modélisation
+```{r}
+library(caret)
+# Séparer les données en 70% pour l'entraînement et 30% pour le test
+set.seed(123)  # Pour la reproductibilité
+splitIndex <- createDataPartition(df$target, p = 0.7, list = FALSE)  # Séparation 70-30
+train_data <- df[splitIndex, ]
+test_data <- df[-splitIndex, ]
+
+
+# Créer un modèle de régression logistique sur les données d'entraînement
+model <- glm(target ~ ., data = train_data, family = binomial)
+
+summary(model)
+```
+
+```{r}
+step_model = step(model, direction="backward", trace=0)
+summary(step_model)
+```
+
+
+
+
+```{r}
+library(randomForest)
+rf_model <- randomForest(
+  target ~ ., 
+  data = train_data,
+  ntree = 500            # nombre d'arbres
+)
+summary(rf_model)
+```
+
+# Evaluation des modèles
+```{r}
+evaluate_model <- function(model, data, y_true, threshold = 0.5, type = "logistic") {
+  
+  # Probabilités
+  if(type == "logistic"){
+    prob <- predict(model, newdata = data, type = "response")
+  } else if(type == "rf"){
+    prob <- predict(model, newdata = data, type = "prob")[,2]
+  }
+  
+  # Prédiction classes
+  y_pred <- ifelse(prob >= threshold, 1, 0)
+  
+  # Confusion matrix
+  cm <- confusionMatrix(as.factor(y_pred), as.factor(y_true), positive = "1")
+  
+  # AUC
+  roc_obj <- roc(y_true, prob, quiet = TRUE)
+  auc_value <- as.numeric(auc(roc_obj))   # <<< IMPORTANT
+  
+  # Résultats
+  list(
+    confusion_matrix = cm$table,
+    accuracy = cm$overall["Accuracy"],
+    precision = cm$byClass["Precision"],
+    recall = cm$byClass["Recall"],
+    F1 = cm$byClass["F1"],
+    AUC = auc_value
+  )
+}
+```
+
+
+```{r}
+threshold <- 0.3
+models_list <- list(
+  list(name = "Logit_full", model = model, type = "logistic", threshold=threshold),
+  list(name = "Logit_step", model = step_model, type = "logistic", threshold=threshold),
+  list(name = "RandomForest", model = rf_model, type = "rf", threshold=threshold)
+)
+
+results <- data.frame()
+
+for(m in models_list){
+  eval <- evaluate_model(
+    m$model, 
+    test_data, test_data[, 'target'],
+    threshold=m$threshold,
+    type=m$type
+  )
+
+   results <- rbind(results, data.frame(
+    Model = m$name,
+    Threshold = m$threshold,
+    Accuracy = eval$accuracy,
+    Precision = eval$precision,
+    Recall = eval$recall,
+    F1 = eval$F1,
+    AUC = eval$AUC
+  ))
+}
+
+results
+```
+
+```{r}
+print("seuil = 50%")
+evaluate_model(
+  rf_model,
+  test_data, test_data[,'target'],
+  threshol=0.5,
+  type='rf'
+)$confusion_matrix
+
+print("")
+print("")
+print("")
+print('seuil = 30%')
+evaluate_model(
+  rf_model,
+  test_data, test_data[,'target'],
+  threshol=0.2,
+  type='rf'
+)$confusion_matrix
+```
+
+
+```{r}
+models_list <- list(
+  list(name = "Logit_full", model = model, type = "logistic"),
+  list(name = "Logit_step", model = step_model, type = "logistic"),
+  list(name = "RandomForest", model = rf_model, type = "rf")
+)
+
+roc_list <- list()
+
+# Calculer les objets ROC pour chaque modèle
+for(m in models_list){
+  
+  # Probabilités
+  if(m$type == "logistic"){
+    prob <- predict(m$model, newdata = test_data, type = "response")
+  } else if(m$type == "rf"){
+    prob <- predict(m$model, newdata = test_data, type = "prob")[,2]
+  }
+  
+  # ROC
+  roc_obj <- roc(test_data$target, prob, quiet = TRUE)
+  
+  # Stocker
+  roc_list[[m$name]] <- roc_obj
+}
+
+
+
+```
+
+
+
+
+```{r}
+roc_df <- data.frame()
+for(m in models_list){
+  if(m$type == "logistic"){
+    prob <- predict(m$model, newdata = test_data, type = "response")
+  } else if(m$type == "rf"){
+    prob <- predict(m$model, newdata = test_data, type = "prob")[,2]
+  }
+  roc_obj <- roc(test_data$target, prob, quiet = TRUE)
+  df <- data.frame(
+    fpr = 1 - roc_obj$specificities,
+    tpr = roc_obj$sensitivities,
+    model = m$name
+  )
+  roc_df <- rbind(roc_df, df)
+}
+
+# Tracer avec ggplot
+ggplot(roc_df, aes(x = fpr, y = tpr, color = model)) +
+  geom_line(size = 1.2) +
+  geom_abline(slope=1, intercept=0, linetype="dashed", color="gray") +
+  labs(title="Courbes ROC comparées",
+       x="False Positive Rate (1 - Specificity)",
+       y="True Positive Rate (Sensitivity)") +
+  theme_minimal() +
+  theme(text = element_text(size=12))
+```
+
+
+
+# Création de la courbe de Lift
+```{r}
+# --- Paramètres marketing ---
+cost_contact <- 0.2     # coût par client contacté
+gain_client <- 14.99     # gain par client positif
+
+# --- Choisir le modèle à tracer ---
+# Exemple : mod = modèle logistique full
+mod <- model
+type_mod <- "logistic"
+
+# --- Prédictions probabilités ---
+if(type_mod == "logistic"){
+  prob <- predict(mod, newdata = test_data, type = "response")
+} else if(type_mod == "rf"){
+  prob <- predict(mod, newdata = test_data, type = "prob")[,2]
+}
+
+# --- Créer un dataframe avec score et target ---
+df <- test_data %>%
+  mutate(prob = prob) %>%
+  arrange(desc(prob)) %>%  # trier par score décroissant
+  mutate(cum_index = row_number(),
+         cum_pct = cum_index / n())  # portion de la base
+
+# --- Calculer le profit cumulatif ---
+df <- df %>%
+  mutate(
+    cum_tp = cumsum(target == 1),   # vrais positifs cumulés
+    cum_n_contacted = cum_index,    # clients contactés
+    cum_profit = cum_tp * gain_client - cum_n_contacted * cost_contact
+  )
+
+# --- Tracer la courbe ---
+ggplot(df, aes(x = cum_pct, y = cum_profit)) +
+  geom_line(color = "blue", size = 1.2) +
+  labs(
+    title = "Courbe de Profit",
+    x = "Portion de clients contactés",
+    y = "Profit cumulé (€)"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+profit_df <- data.frame()  # tableau final
+
+for(m in models_list){
+  
+  # 1️⃣ Probabilités
+  if(m$type == "logistic"){
+    prob <- predict(m$model, newdata = test_data, type = "response")
+  } else if(m$type == "rf"){
+    prob <- predict(m$model, newdata = test_data, type = "prob")[,2]
+  }
+  
+  # 2️⃣ Construire dataframe trié par score
+  df <- test_data %>%
+    mutate(prob = prob) %>%
+    arrange(desc(prob)) %>%
+    mutate(
+      cum_index = row_number(),
+      cum_pct = cum_index / n(),              # portion de clients contactés
+      cum_tp = cumsum(target == 1),          # vrais positifs cumulés
+      cum_n_contacted = cum_index,           # clients contactés cumulés
+      cum_profit = cum_tp * gain_client - cum_n_contacted * cost_contact,
+      model = m$name
+    )
+  
+  # 3️⃣ Ajouter au tableau global
+  profit_df <- rbind(profit_df, df)
+}
+
+ggplot(profit_df, aes(x = cum_pct, y = cum_profit, color = model)) +
+  geom_line(size = 1.2) +
+  labs(
+    title = "Courbes de Profit comparées",
+    x = "Portion de clients contactés",
+    y = "Profit cumulé (€)"
+  ) +
+  theme_minimal() +
+  theme(text = element_text(size = 12))
+
+```
+
+
+```{r}
+# Tableau résumé : profit max et proportion correspondante
+profit_summary <- profit_df %>%
+  group_by(model) %>%
+  summarise(
+    max_profit = max(cum_profit),
+    optimal_pct = cum_pct[which.max(cum_profit)]
+  ) %>%
+  arrange(desc(max_profit))
+
+print(profit_summary)
+
+```

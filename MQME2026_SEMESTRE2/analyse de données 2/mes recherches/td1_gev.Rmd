@@ -1,0 +1,45 @@
+---
+title: "td1_gev"
+author: "Ablaye SOW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+### exploarion des données
+## Exportation des données
+```{r}
+data = read.table("/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/analyse de données 2/Lille.txt", header = TRUE)
+data$Precipitations = data$Precipitations/10
+#head(data, 20)
+print(head(data, 13))
+#install.packages("evd")
+```
+
+## Représentation des précipitations
+
+```{r}
+date <- as.Date(sprintf("%d-%02d-01", data$Annees, data$Mois))
+print(head(date, 10))
+plot(date, data$Precipitations, main = "précipitations mensuelles", xlab = "mois", ylab = "précipitations", type = "l")
+
+```
+
+## Tracer de l'histogramme
+
+
+```{r}
+hist(data$Precipitations, breaks = 30)
+```
+
+### Construction des blocs
+
+```{r}
+nyears = length(unique(data$Annees))
+years = unique(data$Annees)
+maxima = matrix(data = NA, nrow = nyears, ncol = 1)
+for (i in 1:nyears) {
+  maxima[i] = max(data[which(data$Annees == years[i]), which(colnames(data)=="Precipitations")])
+}
+
+plot(years, maxima, type = "b")
+
+```
