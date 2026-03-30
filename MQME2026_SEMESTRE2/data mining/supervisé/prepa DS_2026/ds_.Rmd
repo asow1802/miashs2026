@@ -1,0 +1,95 @@
+---
+title: "ds"
+author: ""
+date: "2026-03-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+data=read.csv("C:/Users/DELL/Desktop/preparation_ds_data_minig/CRSC.csv",sep=";")
+data = data[, 2:ncol(data)] 
+View(data)
+
+```
+
+```{r}
+library(compareGroups)
+library(dplyr)
+data$Y     = factor(data$Y, labels = c("Mauvais payeur", "Bon payeur"))
+data$PROP  = factor(data$PROP, labels = c("Locataire", "Propriétaire"))
+data$PROF  = factor(data$PROF, labels = c("Agriculteur","Artisan","Cadre",
+                                           "Prof. intermédiaire","Employé",
+                                           "Ouvrier","Retraité","Autre"))
+
+```
+```{r}
+library(explore)
+library(dplyr)
+library(gridExtra)
+
+p1 = data %>% explore(AGE)
+p2 = data %>% explore(NCARTES)
+p3 = data %>% explore(PROP)
+p4 = data %>% explore(PROF)
+
+grid.arrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
+```
+
+```{r}
+p1 = data %>% explore(AGE,     target = Y)
+p2 = data %>% explore(NCARTES, target = Y)
+p3 = data %>% explore(PROP,    target = Y)
+p4 = data %>% explore(PROF,    target = Y)
+
+grid.arrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
+```
+
+```{r}
+res_Y = compareGroups(Y ~ AGE + NCARTES + PROP + PROF, data = data)
+tab   = createTable(res_Y, show.p.overall = TRUE)
+print(tab)
+
+```
+```{r}
+data$Y_num = as.numeric(data$Y) - 1  
+
+modele_logit = glm(Y_num ~ AGE, data = data, family = binomial(link = "logit"))
+summary(modele_logit)
+```
+```{r}
+modele_logit_prop = glm(Y_num ~ PROP, data = data, family = binomial(link = "logit"))
+summary(modele_logit_prop)
+
+```
+```{r}
+modele_complet = glm(Y_num ~ AGE + NCARTES + PROP + PROF, 
+                     data = data, family = binomial(link = "logit"))
+summary(modele_complet)
+```
+```{r}
+
+modele_backward = step(modele_complet, direction = "backward", trace = TRUE)
+summary(modele_backward)
+```
+```{r}
+library(pROC)
+
+prob = predict(modele_backward, type = "response")
+View(prob)
+roc_obj = roc(data$Y_num, prob)
+
+plot(roc_obj)
+```
+```{r}
+seuils = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)
+
+for (s in seuils) {
+  pred = ifelse(prob >= s, 1, 0)
+  pct  = round(mean(pred == data$Y_num) * 100, 2)
+  cat("Seuil =", s, " % bien classés =", pct, "%\n")
+}
+
+```
+
+
+

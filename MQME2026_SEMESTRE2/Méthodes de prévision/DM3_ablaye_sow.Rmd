@@ -49,6 +49,13 @@ n = length(data_algo$prix) # n des données de travail
 moy_first_years = mean(data_algo$prix[1:12])
 # moy_first_years
 t = -11:n
+  
+```
+
+
+
+### Algo méthode additive : paramètres optimaux
+```{r}
 St = c(rep(moy_first_years, 12), rep(0, n))
 Tt = rep(0, n+12)
 It = rep(0, n+12)
@@ -59,13 +66,7 @@ Prevt = c(rep(NA, 12),data_algo$prix[1],rep(NA, n-1))
 for (i in 1:12) {
   It[i] = Yt[i+12] - St[i]
 }
-  
-```
 
-
-
-### Algo méthode additive : paramètres optimaux
-```{r}
 additive_algo <- function(niter){
   best_mape <- Inf
   best_params <- rep(NA,3)
@@ -98,30 +99,54 @@ additive_algo(5000)
 ### remplassage des tableaux et valeurs manquantes par la méthode additive
 ```{r}
 params = additive_algo(5000)
-a = params[1]
-g = params[2]
-d = params[3]
+aa = params[1]
+ga = params[2]
+da = params[3]
 ### Mise à jours des tableaux et remplissage des NA
-
+Sta = c(rep(moy_first_years, 12), rep(0, n+12))
+Tta= rep(0, n+12+12)
+Ita = rep(0, n+12+12)
 data_algo <- subset(data, format(periode, "%Y") != "2025")
 ## Yt et Prev de longueur n+12
-Yt = c(rep(NA, 12),data_algo$prix)
-Prevt = c(rep(NA, 12),data_algo$prix[1],rep(NA, n-1))
+Yt_add = c(rep(NA, 12),data_algo$prix)
+Prev_add = c(rep(NA, 12),data_algo$prix[1],rep(NA, n-1))
+for (i in 1:12) {
+  Ita[i] = Yt_add[i+12] - Sta[i]
+}
 
 for (j in 13:n) {
-        St[j] = a*(Yt[j]-It[j-12]) + (1-a)*(St[j-1]+Tt[j-1])
-        Tt[j] = g*(St[j]-St[j-1]) + (1-g)*Tt[j-1]
-        It[j] = d*(Yt[j]-St[j]) + (1-d)*It[j-12]
-        Prevt[j] = St[j-1] + Tt[j-1] + It[j-12]
-      }
-MAPE_add <- mean(abs((Yt[13:n] - Prevt[13:n])/Yt[13:n]), na.rm = TRUE)
+        if(is.na(Yt_add[j])){
+          Yt_add[j] = Ita[j-12] + (1/aa)*Sta[j] -((1-aa)/aa)*(Sta[j-1]+Tta[j-1])
+        }
+        Sta[j] = aa*(Yt_add[j]-Ita[j-12]) + (1-aa)*(Sta[j-1]+Tta[j-1])
+        Tta[j] = ga*(Sta[j]-Sta[j-1]) + (1-ga)*Tta[j-1]
+        Ita[j] = da*(Yt_add[j]-Sta[j]) + (1-da)*Ita[j-12]
+}
+for (j in 14:n) {
+    Prev_add[j] = Sta[j-1] + Tta[j-1] + Ita[j-12]
+}
+MAPE_add <- mean(abs((Yt_add[13:n] - Prev_add[13:n])/Yt_add[13:n]), na.rm = TRUE)
 MAPE_add
+View(cbind(Yt_add,Prev_add, Tta, Sta, Ita))
+
 ```
 
 
 ### Algo méthode multiplicative : paramètres optimaux
 ```{r}
-additive_algo <- function(niter){
+
+St = c(rep(moy_first_years, 12), rep(0, n))
+Tt = rep(0, n+12)
+It = rep(0, n+12)
+## Yt et Prev de longueur n+12
+Yt = c(rep(NA, 12),data_algo$prix)
+Prevt = c(rep(NA, 12),data_algo$prix[1],rep(NA, n-1))
+
+for (i in 1:12) {
+  It[i] = Yt[i+12] / St[i]
+}
+
+multiplicative_algo <- function(niter){
   best_mape <- Inf
   best_params <- rep(NA,3)
   
@@ -152,24 +177,38 @@ multiplicative_algo(5000)
 ### remplassage des tableaux et valeurs manquantes par la méthode multiplicative
 ```{r}
 params = multiplicative_algo(5000)
-a = params[1]
-g = params[2]
-d = params[3]
+am = params[1]
+gm = params[2]
+dm = params[3]
 ### Mise à jours des tableaux et remplissage des NA
+Stm = c(rep(moy_first_years, 12), rep(0, n+12))
+Ttm= rep(0, n+12+12)
+Itm = rep(0, n+12+12)
 
 data_algo <- subset(data, format(periode, "%Y") != "2025")
 ## Yt et Prev de longueur n+12
-Yt = c(rep(NA, 12),data_algo$prix)
-Prevt = c(rep(NA, 12),data_algo$prix[1],rep(NA, n-1))
+Yt_mul = c(rep(NA, 12),data_algo$prix)
+Prev_mul = c(rep(NA, 12),data_algo$prix[1],rep(NA, n-1))
+
+for (i in 1:12) {
+  Itm[i] = Yt_mul[i+12] / Stm[i]
+}
 
 for (j in 13:n) {
-        St[j] = a*(Yt[j]/It[j-12]) + (1-a)*(St[j-1]+Tt[j-1])
-        Tt[j] = g*(St[j]-St[j-1]) + (1-g)*Tt[j-1]
-        It[j] = d*(Yt[j]/St[j]) + (1-d)*It[j-12]
-        Prevt[j] = (St[j-1] + Tt[j-1]) * It[j-12]
-      }
-MAPE_mult <- mean(abs((Yt[13:n] - Prevt[13:n])/Yt[13:n]), na.rm = TRUE)
-MAPE_mult
+        if(is.na(Yt_mul[j])){
+          Yt_mul[j] = Itm[j-12] * ((1/am)*Stm[j] -((1-am)/am)*(Stm[j-1]+Ttm[j-1]))
+        }
+        Stm[j] = am*(Yt_mul[j]/Itm[j-12]) + (1-am)*(Stm[j-1]+Ttm[j-1])
+        Ttm[j] = gm*(Stm[j]-Stm[j-1]) + (1-gm)*Ttm[j-1]
+        Itm[j] = dm*(Yt_mul[j]/Stm[j]) + (1-dm)*Itm[j-12]
+}
+for (j in 14:n) {
+    Prev_mul[j] = (Stm[j-1] + Ttm[j-1])*Itm[j-12]
+}
+MAPE_mul <- mean(abs((Yt_mul[13:n] - Prev_mul[13:n])/Yt_mul[13:n]), na.rm = TRUE)
+MAPE_mul
+
+View(cbind(Yt_mul, Prev_mul, Ttm, Stm, Itm))
 ```
 
 
@@ -179,50 +218,42 @@ D'après les résultats des MAPE ontenues avec les deux méthodes, nous pouvons 
 ### Prévision pour l'année 2025 par la méthode additive
 
 ```{r}
-params = additive_algo(0.05)
-a = params[1]
-g = params[2]
-d = params[3]
-Yt = data_algo$prix
-taille = length(data$periode)
+Yt_add = c(Yt_add, rep(NA, 12))
+Prev_add = c(Prev_add, rep(NA,12))
+m = n+12
 echant2025  <- subset(data, format(periode, "%Y") == "2025")
-echant = echant2025$prix
+echant = c(rep(NA,m),echant2025$prix)
 echant
-Prev_add_2025 = rep(NA, 12)
-for (i in 1:12) {
-        St[i+taille] = a*(echant[i]-It[i+taille-12]) + (1-a)*(St[i+taille-1]+Tt[i+taille-1])
-        Tt[i+taille] = g*(St[i+taille]-St[i+taille-1]) + (1-g)*Tt[i+taille-1]
-        It[i+taille] = d*(echant[i]-St[i+taille]) + (1-d)*It[i+taille-12]
-        Prev_add_2025[i] = St[i+taille-1] + Tt[i+taille-1] + It[i+taille-12]
+for (i in (m+1):(m+12)) {
+        St[i] = aa*(echant[i]-It[i-12]) + (1-aa)*(St[i-1]+Tt[i-1])
+        Tt[i] = ga*(St[i]-St[i-1]) + (1-ga)*Tt[i-1]
+        It[i] = da*(echant[i]-St[i]) + (1-da)*It[i-12]
+        Prev_add[i] = St[i-1] + Tt[-1] + It[i-12]
 }
 
-data_2025_add = cbind(Prev_add_2025, echant)
+data_2025_add = cbind(Prev_add[(m+1):(m+12)], echant[(m+1):(m+12)])
 View(data_2025_add)
-MAPE_add <- mean(abs((echant - Prev_add_2025)/echant), na.rm = TRUE)
-MAPE_add
+#MAPE_add <- mean(abs((echant[m:m+12] - Prev_add_2025[m:m+12])/echant[m:m+12]), na.rm = TRUE)
+#MAPE_add
 ```
 
 ### Prévision pour l'année 2025 par la méthode multiplicative
 
 ```{r}
-params = multiplicative_algo(0.05)
-a = params[1]
-g = params[2]
-d = params[3]
-Yt = data_algo$prix
-taille = length(data$periode)
+Yt_mul = c(Yt_mul, rep(NA, 12))
+Prev_mul = c(Prev_mul, rep(NA,12))
+m = n+12
 echant2025  <- subset(data, format(periode, "%Y") == "2025")
-echant = echant2025$prix
-Prev_mult_2025 = rep(NA, 12)
-for (i in 1:12) {
-        St[i+taille] = a*(echant[i]/It[i+taille-12]) + (1-a)*(St[i+taille-1]+Tt[i+taille-1])
-        Tt[i+taille] = g*(St[i+taille]-St[i+taille-1]) + (1-g)*Tt[i+taille-1]
-        It[i+taille] = d*(echant[i]/St[i+taille]) + (1-d)*It[i+taille-12]
-        Prev_mult_2025[i] = (St[i+taille-1] + Tt[i+taille-1]) * It[i+taille-12]
+echant = c(rep(NA,m),echant2025$prix)
+for (i in (m+1):(m+12)) {
+        St[i] = am*(echant[i]/It[i-12]) + (1-am)*(St[i-1]+Tt[i-1])
+        Tt[i] = gm*(St[i]-St[i-1]) + (1-gm)*Tt[i-1]
+        It[i] = dm*(echant[i]/St[i]) + (1-dm)*It[i-12]
+        Prev_mul[i] = (St[i-1] + Tt[-1]) * It[i-12]
 }
 
-data_2025_mult = cbind(Prev_mult_2025, echant)
-View(data_2025_mult)
-MAPE_mult <- mean(abs((echant - Prev_mult_2025)/echant), na.rm = TRUE)
-MAPE_mult
+data_2025_mul = cbind(Prev_mul[(m+1):(m+12)], echant[(m+1):(m+12)])
+View(data_2025_mul)
+#MAPE_add <- mean(abs((echant[m:m+12] - Prev_add_2025[m:m+12])/echant[m:m+12]), na.rm = TRUE)
+#MAPE_add
 ```

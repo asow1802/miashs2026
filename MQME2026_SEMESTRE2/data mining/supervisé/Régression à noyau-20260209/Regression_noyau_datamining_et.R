@@ -83,7 +83,7 @@ lines(t,truef4, type = "l", col="red", lty="dotdash", lwd=2)
 # Questions 2 et 3
 ####################
 
-#library(KernSmooth)
+library(KernSmooth)
 #telecharger aussi la library (np)
 # Faire varier h, d et la fonction f1 dans le code ci-dessus
 

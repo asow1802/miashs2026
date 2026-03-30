@@ -1,0 +1,135 @@
+---
+title: "Travaux pratiques 2"
+author: "Ablaye SOW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1 les Données
+
+```{r}
+data = read.csv("/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/analyse de données 2/DebitsSeine.csv", header = TRUE, sep = ";")
+library(dplyr)
+library(lubridate)
+
+data <- data %>%
+  mutate(Date = ymd_hms(Date))
+View(data)
+debits = data$Valeur
+print(length(debits))
+```
+
+## 2 Exploration
+
+```{r}
+plot(data$Date, data$Valeur, type = "l")
+```
+
+```{r}
+hist(debits, breaks =  50, col = "lightblue")
+```
+### 3 Dépendance temporelle
+```{r}
+acf(debits, main = "ACF des débit journaliers")
+```
+
+
+## 4 Choix de seuil
+
+```{r}
+u = as.numeric(quantile(debits, 0.95))
+u
+```
+```{r}
+max_value = debits[debits>u]
+print(length(max_value))
+```
+## 5 Identification des clusters
+
+```{r}
+library(evd)
+
+new_data <- clusters(debits, u= u, r = 3)
+#head(new_data)
+length(new_data)
+```
+```{r}
+
+val_max = clusters(debits, u= u, r = 3, cmax = TRUE)
+length(val_max)
+
+```
+```{r}
+plot(data$Date, data$Valeur, type = "l")
+
+val_max_index = as.numeric(names(clusters(debits, u= u, r = 3, cmax = TRUE, keep.names = TRUE)))
+abline(h = u, col = "blue", lwd = 2)
+points(data$Date[val_max_index], debits[val_max_index], col = "red", pch = 16)
+```
+## 6 Ajustement d'un modèle GPD
+
+```{r}
+#install.packages("evd")
+library(evd)
+```
+
+```{r}
+## Ajustement du modèle sans déclustering
+params = fpot(debits, threshold = u)
+print(params)
+```
+```{r}
+## Ajustement du modèle sans déclustering
+params = fpot(val_max, threshold = u)
+print(params)
+```
+
+## 7 niveaux de retour
+
+```{r}
+# Calcul des niveaux de retour sans décluster
+npp = 365.25
+z10 = fpot(debits, threshold = u, model = "gpd", npp = npp, mper = 10)
+z50 = fpot(debits, threshold = u, model = "gpd", npp = npp, mper = 50)
+z10
+#z50
+```
+
+```{r}
+# Calcul des niveaux de retour
+npp = 365.25
+z50 = fpot(debits, threshold = u, model = "gpd", npp = npp, mper = 50, cmax = TRUE, r = 3)
+z10 = fpot(debits, threshold = u, model = "gpd", npp = npp, mper = 10, , cmax = TRUE, r = 3)
+z50
+```
+## 8 Validation graphique
+
+```{r}
+params = fpot(debits, threshold = u)
+plot(params)
+```
+
+```{r}
+params = fpot(val_max, threshold = u)
+plot(params)
+```
+
+```{r}
+nexces = sum(debits>u)
+ncluster = length(new_data)
+teta_hat = ncluster/nexces
+teta_hat
+```
+
+
+
+
+
+
+
+
+

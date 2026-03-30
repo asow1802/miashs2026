@@ -9,7 +9,7 @@ library(dplyr)    # Pour la manipulation des données
 require(pROC)
 
 #Mise en place
-folder='/Users/emileroussel/Desktop/UNIV/Séance 3/'
+folder='/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2/markting quantitatif/Séance 3/'
 setwd(folder)
 
 file='last_event.csv'
