@@ -45,6 +45,8 @@ hist(val_max_annee, breaks = 20)
 length(val_max_annee)
 print(val_max_annee)
 ```
+
+
 ```{r}
 plot(annees, val_max_annee, type = "b")
 ```

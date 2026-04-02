@@ -1,0 +1,103 @@
+---
+title: "TD 4"
+author: "Ablaye SOW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+
+### 1.1 Données
+
+```{r}
+# Chargement du package et des données
+library(evd)
+data(lisbon)
+
+# Structure
+str(lisbon)
+length(lisbon)  # n = 30
+
+# Série temporelle
+years <- 1941:1970
+plot(years, lisbon, type = "b", pch = 16,
+     xlab = "Année", ylab = "Vitesse de vent max (m/s)",
+     main = "Maxima annuels de vitesses de vent – Lisbonne")
+```
+
+```{r}
+years <- 1941:1970
+plot(years, lisbon, type = "b", pch = 16,
+     xlab = "Année", ylab = "Vitesse de vent max (m/s)",
+     main = "Maxima annuels de vitesses de vent – Lisbonne")
+
+lm_fit <- lm(lisbon ~ years)
+abline(lm_fit, col = "red", lwd = 2)
+```
+
+```{r}
+hist(lisbon)
+```
+
+### Partie 2
+
+```{r}
+library(evd)
+
+# Ajustement GEV stationnaire
+fit0 <- fgev(lisbon)
+summary(fit0)
+
+# Paramètres estimés
+fit0$estimate   # mu, sigma, xi
+
+# Log-vraisemblance maximale
+logLik(fit0)    # ou : -fit0$value
+```
+
+
+### Partie 3
+
+```{r}
+# Variable temps centrée t = 1, ..., n
+n <- length(lisbon)
+t <- 1:n
+
+# Ajustement GEV non-stationnaire : mu(t) = beta0 + beta1 * t
+fit = gev.fit(lisbon, ydat = cbind(t), mul = 1, show = FALSE)
+# Paramètres estimés
+mu_hate = fit1$estimate[1]
+sigma_hate = fit1$estimate[2]
+xi_hate = fit1$estimate[3]
+# Intervalles de confiance à 95%
+IC = cbind(
+  estimate = fit$mle,
+  se = fit$se,
+  lower = fit$mle - 1.96*fit$se,
+  upper = fit$mle + 1.96*fit$se
+)
+rownames(IC) = c("beta0", "beta1", "sigma", "xi")
+print(IC)
+```
+
+### Partie 4
+```{r}
+# Paramètres estimés
+beta0 <- fit$estimate["loc"]
+beta1 <- fit$estimate["loc1"]
+
+# Évolution de mu(t)
+mu_t <- beta0 + beta1 * t
+
+# Graphique
+plot(years, lisbon, type = "b", pch = 16,
+     xlab = "Année", ylab = "Vitesse (m/s)",
+     main = "Série observée et µ(t) estimé")
+lines(years, mu_t, col = "blue", lwd = 2)
+legend("topright", legend = c("Données", "µ(t) estimé"),
+       col = c("black", "blue"), lty = c(1,1), pch = c(16, NA))
+```
+### Partie 5
+```{r}
+```
+
