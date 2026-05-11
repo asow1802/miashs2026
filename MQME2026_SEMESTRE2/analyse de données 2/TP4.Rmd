@@ -2,7 +2,9 @@
 title: "TD 4"
 author: "Ablaye SOW"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 
@@ -66,9 +68,9 @@ t <- 1:n
 # Ajustement GEV non-stationnaire : mu(t) = beta0 + beta1 * t
 fit = gev.fit(lisbon, ydat = cbind(t), mul = 1, show = FALSE)
 # Paramètres estimés
-mu_hate = fit1$estimate[1]
-sigma_hate = fit1$estimate[2]
-xi_hate = fit1$estimate[3]
+mu_hate = fit$estimate[1]
+sigma_hate = fit$estimate[2]
+xi_hate = fit$estimate[3]
 # Intervalles de confiance à 95%
 IC = cbind(
   estimate = fit$mle,
@@ -83,8 +85,9 @@ print(IC)
 ### Partie 4
 ```{r}
 # Paramètres estimés
-beta0 <- fit$estimate["loc"]
-beta1 <- fit$estimate["loc1"]
+
+beta0 <- fit$mle[1]
+beta1 <- fit$mle[2]
 
 # Évolution de mu(t)
 mu_t <- beta0 + beta1 * t
@@ -95,9 +98,124 @@ plot(years, lisbon, type = "b", pch = 16,
      main = "Série observée et µ(t) estimé")
 lines(years, mu_t, col = "blue", lwd = 2)
 legend("topright", legend = c("Données", "µ(t) estimé"),
-       col = c("black", "blue"), lty = c(1,1), pch = c(16, NA))
+      col = c("black", "blue"), lty = c(1,1), pch = c(16, NA))
 ```
-### Partie 5
-```{r}
+### Partie 5 Comparaison des modèles
+```{r likelihood_ratio_test}
+# Log-vraisemblances
+loglik_stat = -fit0$deviance/2
+loglik_nonstat = -fit$nllh
+
+l0 <- loglik_stat
+l1 <- loglik_nonstat
+
+# Déviance
+D <- 2 * (l1 - l0)
+
+# Nombre de degrés de liberté (1 paramètre supplémentaire : β₁)
+df <- 1
+
+# p-value
+p_value <- 1 - pchisq(D, df)
+
+cat("=== Test du Rapport de Vraisemblance ===\n")
+cat("Log-vraisemblance M0 (stationnaire)     :", round(l0, 4), "\n")
+cat("Log-vraisemblance M1 (non-stationnaire) :", round(l1, 4), "\n")
+cat("Déviance D = 2(ℓ₁ - ℓ₀)                 :", round(D, 4), "\n")
+cat("Degrés de liberté                        :", df, "\n")
+cat("Valeur critique χ²(0.05, 1)             :", round(qchisq(0.95, 1), 4), "\n")
+cat("p-value                                  :", round(p_value, 4), "\n")
+cat("\nDécision : ", ifelse(p_value < 0.05, 
+                            "Rejeter M0 (modèle stationnaire)", 
+                            "Ne pas rejeter M0"), "\n")
+```
+Donc le modèle non stationnaire est retenu.
+
+### Niveaux de retour dépendant du temps
+
+```{r return_levels}
+# Période de retour
+T_ret <- 20  # 20 ans
+
+# Fonction pour calculer le niveau de retour
+calc_return_level <- function(mu, sigma, xi, T) {
+  p <- 1 - 1/T
+  if (abs(xi) < 1e-6) {
+    # Cas Gumbel (xi = 0)
+    return(mu - sigma * log(-log(p)))
+  } else {
+    # Cas GEV général
+    return(mu + (sigma/xi) * ((-log(p))^(-xi) - 1))
+  }
+}
+
+# Niveaux de retour pour différentes dates
+dates_test <- c(1, 15, 30)  # Début, milieu, fin
+annees_test <- 1940 + dates_test
+
+# Calcul pour le modèle non-stationnaire
+mu_temps <- beta0 + beta1 * dates_test
+rl_nonstat <- sapply(mu_temps, function(mu) {
+  calc_return_level(mu, sigma_nonstat, xi_nonstat, T_ret)
+})
+
+# Calcul pour le modèle stationnaire
+rl_stat <- calc_return_level(mu_stat, sigma_stat, xi_stat, T_ret)
+
+# Tableau récapitulatif
+rl_table <- data.frame(
+  Année = annees_test,
+  Temps_t = dates_test,
+  mu_t = mu_temps,
+  RL_NonStat = rl_nonstat,
+  RL_Stat = rep(rl_stat, 3),
+  Différence = rl_nonstat - rl_stat
+)
+
+kable(rl_table, 
+      digits = 3,
+      caption = "Niveaux de retour à 20 ans selon le modèle")
 ```
 
+
+```{r plot_return_levels}
+# Calcul pour toute la période
+mu_all <- beta0 + beta1 * (1:n)
+rl_all <- sapply(mu_all, function(mu) {
+  calc_return_level(mu, sigma_nonstat, xi_nonstat, T_ret)
+})
+cat(rl_all)
+# Graphique
+ggplot(data.frame(annee = 1941:1970, rl = rl_all), aes(x = annee, y = rl)) +
+  geom_line(color = "darkgreen", linewidth = 1.2) +
+  geom_hline(yintercept = rl_stat, color = "red", linetype = "dashed", linewidth = 1) +
+  geom_point(data = rl_table, aes(x = Année, y = RL_NonStat), 
+             color = "blue", size = 3) +
+  annotate("text", x = 1950, y = rl_stat + 0.5, 
+           label = "Niveau stationnaire", color = "red", size = 4) +
+  labs(
+    title = "Évolution du niveau de retour à 20 ans",
+    subtitle = "Comparaison modèle stationnaire vs non-stationnaire",
+    x = "Année",
+    y = "Niveau de retour (m/s)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+```
+
+### 7 Validation graphique
+
+```{r}
+transfor_gev_gum <- function(x, mu, sig, xi){
+  z = 1 + xi*(x-mu)/sig
+  if(any(z<=0)){
+    warning("Certaines valeurs ne sont pas dans le support gev")
+  }
+  if(abs(xi)>=1e-6){
+    
+  }
+}
+```

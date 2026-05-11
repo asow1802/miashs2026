@@ -1,0 +1,956 @@
+---
+title: "Projet Séries Temporelles"
+subtitle: |
+  Consommation mensuelle des ménages en énergie, eau et déchets  
+  Master 1 MIASHS --- Université de Lille
+author: "Ablaye SOW"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_caption: true
+---
+
+```{r logo, echo=FALSE, fig.align='center', out.width='40%'}
+knitr::include_graphics("logo_univ_lille.png")
+```
+
+
+# Partie 1 : Présentation de la série temporelle et visualisation
+
+## Présentation de la série temporelle
+
+La série étudiée dans ce travail est la **consommation mensuelle des ménages en biens 
+d'énergie, eau et déchets** en France métropolitaine (type de produit : DE — 
+Énergie, eau et déchets), publiée par l'INSEE sous l'identifiant **idBank 011794485**.
+
+Il s'agit d'une série en **valeurs absolues**, exprimée en **milliards d'euros**, 
+aux **volumes aux prix de l'année précédente, chaînés depuis 2020** (base 100 = 2020). 
+
+La série couvre la période de **janvier 1980 à janvier 2026**, soit **549 observations 
+mensuelles**. Elle est mise à jour régulièrement, la dernière mise à jour datant 
+du **30 avril 2026**.
+
+**Source :** INSEE — Comptes nationaux trimestriels, série idBank 011794485.  
+Disponible à l'adresse : <https://www.insee.fr/fr/statistiques/serie/011794485>
+
+**Note importante :** La consommation d'énergie, d'eau et de déchets des ménages 
+reflète à la fois les comportements de consommation des ménages et les conditions 
+climatiques (chauffage, climatisation), ce qui en fait un indicateur sensible aux 
+chocs conjoncturels et aux évolutions structurelles du pouvoir d'achat.
+
+## Importation et préparation des données
+
+```{r importation}
+## https://www.insee.fr/fr/statistiques/serie/011794485#Telechargement
+# Charger les données
+data <- read.csv(
+  file.path(
+    "/home/layedev/Documents/miashs2026/MQME2026_SEMESTRE2",
+    "Méthodes de prévision",
+    "projet_2026",
+    "valeurs_mensuelles.csv"
+  ),
+  header = TRUE,
+  dec = "."
+)
+## nettoyage des données : suppression des 4 premières lignes et de la 3ème colonne
+data <- data[5:nrow(data), -3]
+colnames(data) <- c("Date", "Valeur")
+
+## On ordonne les données par date croissante
+data <- data[order(data$Date), ]
+
+## convertion de la colonne Valeur en numérique
+data$Valeur <- as.numeric(data$Valeur)
+## conversion de la colonne Date en format Date
+data$Date <- as.Date(paste0(data$Date, "-01"))
+
+knitr::kable(head(data, 10), caption = "Aperçu des données")
+```
+
+## Visualisation de la série temporelle
+
+```{r cars}
+plot(data$Date, data$Valeur, type = "l", col = "blue", 
+xlab = "Date", ylab = "Valeur (milliards d'euros)", 
+main = "Consommation mensuelle des ménages en énergie, 
+eau et déchets (1980-2026)")
+```
+
+## Analyse du graphique de la série temporelle
+
+L'observation de la série sur la période 1980–2026 met en évidence plusieurs 
+caractéristiques structurelles et conjoncturelles :
+
+- Une **tendance haussière de long terme** entre 1980 et 2013 environ, reflétant la 
+  croissance progressive de la consommation d'énergie et d'eau des ménages français, 
+  corrélée à l'augmentation du niveau de vie et à l'équipement des foyers.
+
+- Un **pic autour de 2012–2013** (environ 5,3 milliards d'euros), suivi d'une 
+  **tendance baissière** jusqu'en 2026, qui traduit vraisemblablement les effets 
+  conjugués des politiques d'efficacité énergétique, de la hausse des prix de 
+  l'énergie incitant à la sobriété, et des hivers plus doux liés au changement 
+  climatique.
+
+- Un **creux ponctuel en avril 2020** (environ 4,22 milliards d'euros), 
+  imputable au premier confinement lié à la pandémie de Covid-19, qui a 
+  brutalement modifié les comportements de consommation.
+
+- Une **forte volatilité en 2021–2022** associée à la crise énergétique mondiale, 
+  avec des pics de consommation inhabituels en lien avec la flambée des prix.
+
+
+
+
+# Partie 2 : Méthodes de décomposition
+
+### Modèles classiques de décomposition
+
+Soit une série chronologique $(X_t,\ t = 1, \ldots, T)$. Le modèle 
+classique de décomposition distingue trois composantes :
+
+$$\boxed{X_t = T_t + I_t + \varepsilon_t} \quad \text{(modèle additif)}$$
+
+$$\boxed{X_t = T_t \times I_t \times \varepsilon_t} \quad \text{(modèle multiplicatif)}$$
+
+où :
+
+- $T_t$ est la **tendance** (composante fondamentale de long terme),
+- $I_t$ est la **composante saisonnière** déterministe,
+- $\varepsilon_t$ est la **composante résiduelle** aléatoire.
+
+Le modèle additif est adapté quand l'amplitude des variations 
+saisonnières est **constante** au fil du temps. Le modèle multiplicatif 
+est préférable quand cette amplitude est **proportionnelle au niveau** 
+de la série. Le passage de l'un à l'autre se fait par transformation 
+logarithmique :
+
+$$\log(X_t) = \log(T_t) + \log(I_t) + \log(\varepsilon_t)$$
+
+Dans ce travail, nous retenons le **modèle additif**, la série 
+présentant une amplitude saisonnière résiduelle relativement stable.
+
+
+## Calcul de la tendance : Moyenne mobile d'ordre 12
+
+### Formulation théorique
+
+Pour des données **mensuelles** ($s = 12$), la tendance est estimée 
+par une **moyenne mobile d'ordre 12 centrée**, définie par :
+
+$$\boxed{T_t = \frac{1}{24}X_{t-6} + \frac{1}{12}\sum_{k=-5}^{5} X_{t+k} + \frac{1}{24}X_{t+6}}$$
+
+Cette formule est un cas particulier de la moyenne mobile d'ordre $p$ 
+pair. Pour $p$ pair en général :
+
+$$T_t = \frac{1}{p}\left(\frac{1}{2}X_{t-p/2} + X_{t-p/2+1} + \cdots + X_{t+p/2-1} + \frac{1}{2}X_{t+p/2}\right)$$
+
+La moyenne mobile a un **effet lissant** : elle atténue les 
+irrégularités et élimine les mouvements saisonniers de période $s$. 
+En contrepartie, les valeurs de $T_t$ ne sont pas disponibles pour 
+les **6 premières et 6 dernières** observations.
+
+```{r tendance}
+
+n <- length(data$Date)
+
+Tendance <- matrix(data = NA, nrow = n, ncol = 1)
+
+## calcul de la moyenne mobile d'ordre 12
+for (i in 7:(n-6)) {
+  Tendance[i, 1] <- (1/24) * (data$Valeur[i-6] + data$Valeur[i+6]) +
+                  (1/12) * sum(data$Valeur[(i-5):(i+5)])
+} 
+```
+
+
+## Calcul des données sans la tendance
+
+### Formulation théorique
+
+Une fois la tendance $T_t$ estimée, on calcule la **série sans 
+tendance** (modèle additif) :
+
+$$\boxed{X_t - T_t = I_t + \varepsilon_t}$$
+
+Ces résidus sont reportés dans le **tableau de Buys-Ballot**, qui 
+organise les données en **lignes = mois** et **colonnes = années**. 
+Pour chaque mois $i \in \{1, \ldots, 12\}$, on calcule la moyenne 
+sur toutes les années disponibles :
+
+$$\bar{m}_i = \frac{1}{N_i} \sum_{j} (X_{i+12(j-1)} - T_{i+12(j-1)})$$
+
+où $N_i$ est le nombre d'années disponibles pour le mois $i$.
+
+On corrige ensuite ces moyennes pour satisfaire la **contrainte de 
+conservation des aires** (principe d'identification) :
+
+$$\boxed{I_i = \bar{m}_i - \bar{m}_{\bullet}} \quad \text{avec} \quad \bar{m}_{\bullet} = \frac{1}{12}\sum_{i=1}^{12}\bar{m}_i$$
+
+Ce qui garantit que :
+
+$$\sum_{i=1}^{12} I_i = 0$$
+
+Les coefficients $I_i$ s'appliquent identiquement à toutes les 
+années : $I_1 = I_{13} = I_{25} = \cdots = I_{\text{Janvier}}$, etc.
+
+```{r}
+data_sans_tendance <- data$Valeur - Tendance[, 1]
+
+annees = 1980:2026
+tableau <- matrix(data = NA, nrow = 12, ncol = length(annees))
+Buys_Ballot <- matrix(data = NA, nrow = 12, ncol = length(annees))
+
+
+
+for(i in 1:12) {
+  for (j in 1:length(annees)) {
+    if(i*j > n) {
+      tableau[i, j] <- NA
+    }
+    else {
+      tableau[i, j] <- data_sans_tendance[i + 12*(j-1)]
+      Buys_Ballot[i, j] <- data$Valeur[i + 12*(j-1)]
+    }
+  }
+}
+
+tableau <- as.data.frame(tableau)
+colnames(tableau) <- annees
+mois = c("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
+ "Août", "Septembre", "Octobre", "Novembre", "Décembre")
+rownames(tableau) <- mois
+```
+
+
+
+## calcul des moyennes mensuelles et des variations saisonnières
+
+
+### (Méthode additive)
+
+```{r}
+moyennes <- rowMeans(tableau, na.rm = TRUE)
+tableau <- cbind(tableau, moyennes)
+colnames(tableau)[ncol(tableau)] <- "Moyenne"
+
+moyenne_globale <- mean(tableau$Moyenne, na.rm = TRUE)
+var_saisonniere <- tableau$Moyenne - moyenne_globale
+tableau <- cbind(tableau, var_saisonniere)
+colnames(tableau)[ncol(tableau)] <- "It"
+
+knitr::kable(tableau[, c(1:6, ncol(tableau)-1, ncol(tableau))],
+             caption = "Tableau de Buys-Ballot (extrait)",
+             digits = 3)
+```
+
+
+## calcul de la serie corrigée (CVS)
+
+### Formulation théorique
+
+Pour obtenir la **série CVS** (corrigée des variations saisonnières), 
+on retranche à chaque observation le coefficient saisonnier du mois 
+correspondant :
+
+$$\boxed{X_t^{CVS} = X_t - I_t}$$
+
+La série CVS ne contient plus que la tendance et le résidu :
+
+$$X_t^{CVS} = T_t + \varepsilon_t$$
+
+```{r}
+Buys_Ballot <- Buys_Ballot - rep(tableau$It, each = length(annees))
+Buys_Ballot = as.data.frame(Buys_Ballot)
+colnames(Buys_Ballot) = annees
+row.names(Buys_Ballot) = mois
+knitr::kable(Buys_Ballot[, 1:8],
+             caption = "Série CVS — Tableau de Buys-Ballot corrigé (extrait)",
+             digits = 3)
+```
+
+
+## Découpage de la série brute en échantillons d'estimation et de prévision
+
+```{r}  
+# échantillon d'estimation
+estimation <- data$Valeur[1:(n-12)]
+# échantillon de prévision
+prevision <- data$Valeur[(n-11):n]
+# conversion en série temporelle
+data_ts <- ts(estimation, frequency = 12)
+```
+
+# Partie 3 : Méthodes de lissage
+
+## La méthode Holt
+
+### Formulation théorique
+
+La méthode de Holt permet de construire des **prévisions linéaires** 
+pour des séries présentant une tendance, sans composante saisonnière. 
+La prévision à l'horizon $h$ faite en $T$ est :
+
+$$\hat{Y}_T(h) = S_T + h \cdot T_T, \quad h = 1, 2, \ldots$$
+
+où $S_t$ est la **composante de niveau** et $T_t$ est la 
+**composante de tendance**, mises à jour récursivement par :
+
+$$\boxed{S_t = \alpha Y_t + (1 - \alpha)(S_{t-1} + T_{t-1})}$$
+
+$$\boxed{T_t = \beta(S_t - S_{t-1}) + (1 - \beta)T_{t-1}}$$
+
+avec $0 < \alpha < 1$ la constante de lissage du niveau et 
+$0 < \beta < 1$ la constante de lissage de la tendance.
+
+**Initialisation :** $S_1 = Y_1$ et $T_1 = 0$.
+
+### Interprétation
+
+- $S_t$ est une moyenne pondérée de l'observation courante $Y_t$ 
+  et de la prévision précédente $(S_{t-1} + T_{t-1})$.
+- $T_t$ est une moyenne pondérée de l'accroissement récent du 
+  niveau $(S_t - S_{t-1})$ et de la tendance passée $T_{t-1}$.
+- Un $\alpha$ proche de 1 donne plus de poids aux observations 
+  récentes ; un $\beta$ proche de 1 fait réagir rapidement la 
+  tendance aux changements.
+
+
+### Estimations des paramètres qui minimisent le MAP
+
+```{r}
+# Fonction qui calcule le MAPE pour des alpha et beta donnés
+calcul_mape_holt <- function(alpha, beta, serie) {
+  n <- length(serie)
+  St <- numeric(n)
+  Tt <- numeric(n)
+  Prev <- numeric(n)
+  
+  # Initialisation
+  St[1] <- serie[1]
+  Tt[1] <- 0
+  Prev[1] <- serie[1]
+  
+  # Récurrence
+  for (t in 2:n) {
+    Prev[t] <- St[t-1] + Tt[t-1]
+    St[t]   <- alpha * serie[t] + (1 - alpha) * (St[t-1] + Tt[t-1])
+    Tt[t]   <- beta  * (St[t] - St[t-1]) + (1 - beta) * Tt[t-1]
+  }
+  
+  # MAPE (on exclut t=1 car pas de prévision possible)
+  mape <- mean(abs((serie[-1] - Prev[-1]) / serie[-1])) * 100
+  return(mape)
+}
+
+# Recherche sur grille (pas de 0.01)
+
+grille <- seq(0.01, 0.99, by = 0.01)
+
+resultats <- data.frame(
+  alpha = numeric(),
+  beta  = numeric(),
+  MAPE  = numeric()
+)
+
+best_mape  <- Inf
+best_alpha <- NA
+best_beta  <- NA
+
+for (alpha in grille) {
+  for (beta in grille) {
+    mape <- calcul_mape_holt(alpha, beta, estimation)
+    
+    if (mape < best_mape) {
+      best_mape  <- mape
+      best_alpha <- alpha
+      best_beta  <- beta
+    }
+  }
+}
+
+cat("=== Résultats de l'optimisation Holt (MAPE) ===\n")
+cat("Alpha optimal :", best_alpha, "\n")
+cat("Beta  optimal :", best_beta,  "\n")
+``` 
+
+
+### Prévision à l'aide de la méthode Holt
+
+```{r}
+# Initialisation des vecteurs pour les composantes de niveau, de tendance et 
+#les prévisions
+
+# St_holt[t] : composante de niveau à l'instant t de meme longueur que 
+#l'échantillon d'estimation
+St_holt <- c(estimation[1], rep(0, length(estimation) - 1 ))
+
+# Tt_holt[t] : composante de tendance à l'instant t de meme longueur que 
+#l'échantillon d'estimation
+Tt_holt <- c(0, rep(0, length(estimation) - 1))
+
+# Prevt_holt[t] : prévision à l'instant t de meme longueur que les données de départ
+Prevt_holt <- c(estimation[1], rep(0, n-1))
+
+
+for (t in 2:length(estimation)) {
+  St_holt[t] <- best_alpha * estimation[t] + (1 - best_alpha) * (St_holt[t-1] +
+   Tt_holt[t-1])
+
+  Tt_holt[t] <- best_beta * (St_holt[t] - St_holt[t-1]) + 
+  (1 - best_beta) * Tt_holt[t-1]
+
+  Prevt_holt[t] <- St_holt[t-1] + Tt_holt[t-1]
+}
+mape_holt <- mean(abs((estimation - Prevt_holt[1:(n-12)]) / estimation)) * 100
+## Affichage du MAPE et des paramètres optimaux
+cat("MAPE pour la méthode Holt :", mape_holt, "%\n")
+cat("Paramètre alpha optimal :", best_alpha, "\n")
+cat("Paramètre beta optimal :", best_beta, "\n")
+```
+
+
+### Visualisation des prévisions et données observées sur les échantillons d'estimation
+
+```{r}
+plot(data$Date[1:(n-12)], estimation, type = "l", col = "blue", xlab = "Date",
+ ylab = "Valeur", main = "Données observées et prévisions Holt")
+lines(data$Date[1:(n-12)], Prevt_holt[1:(n-12)], col = "green")
+legend("topleft", legend = c("Données réelles", "Prévision"), 
+col = c("blue", "green"), lty = 1)
+```
+
+## La méthode de Holt-Winters additive
+
+### Formulation théorique
+
+La méthode de Holt-Winters additive étend la méthode de Holt en 
+ajoutant une **composante saisonnière additive** $I_t$. 
+La prévision à l'horizon $h$ est :
+
+$$\hat{Y}_T(h) = S_T + h \cdot T_T + I_{T+h-s}$$
+
+où $s = 12$ est la période saisonnière (données mensuelles). 
+Les trois composantes sont mises à jour par :
+
+$$\boxed{S_t = \alpha(Y_t - I_{t-s}) + (1 - \alpha)(S_{t-1} + T_{t-1})}$$
+
+$$\boxed{T_t = \beta(S_t - S_{t-1}) + (1 - \beta)T_{t-1}}$$
+
+$$\boxed{I_t = \delta(Y_t - S_t) + (1 - \delta)I_{t-s}}$$
+
+avec $0 < \alpha < 1$, $0 < \beta < 1$ et $0 < \delta < 1$.
+
+**Initialisation :** Pour $t = 0, -1, \ldots, -(s-1)$ :
+
+- $S_0 = \bar{Y}_{1:s}$ (moyenne des $s$ premières observations)
+- $T_0 = 0$
+- $I_{-k} = Y_{s-k} - S_0$ pour $k = 0, 1, \ldots, s-1$
+
+### Interprétation
+
+Dans le modèle additif, la saisonnalité est exprimée en **écart 
+absolu** par rapport au niveau. Elle est appropriée lorsque 
+l'amplitude des oscillations saisonnières est **constante** au fil 
+du temps (indépendante du niveau de la série).
+
+
+### Estimations des paramètres qui minimisent le MAPE
+
+```{r}
+library(forecast)
+model_hw <- hw(data_ts, seasonal = "additive", h = 12)
+best_alpha_hw <- model_hw$model$par["alpha"]
+best_beta_hw <- model_hw$model$par["beta"]
+best_gamma_hw <- model_hw$model$par["gamma"]
+```
+
+
+### Prévision à l'aide de la méthode de Holt-Winters additive
+
+```{r}
+St_hw <- c(rep(mean(data$Valeur[1:12]), 12), rep(0, length(estimation)))
+Tt_hw <- c(rep(0, 12), rep(0, length(estimation)))
+It_hw <- c(rep(0, 12), rep(0, length(estimation)))
+Prevt_hw <- c(estimation[1], rep(0, n - 1))
+
+for (i in 1:12) {
+  It_hw[i] <- data$Valeur[i] - St_hw[i]
+}
+
+for (t in 13:length(St_hw)) {
+  St_hw[t] <- best_alpha_hw * (estimation[t-12] - It_hw[t-12]) + 
+  (1 - best_alpha_hw) * (St_hw[t-1] + Tt_hw[t-1])
+
+  Tt_hw[t] <- best_beta_hw * (St_hw[t] - St_hw[t-1]) + 
+  (1 - best_beta_hw) * Tt_hw[t-1]
+
+  It_hw[t] <- best_gamma_hw * (estimation[t-12] - St_hw[t]) + 
+  (1 - best_gamma_hw) * It_hw[t-12]
+
+  if(t>13) {
+    Prevt_hw[t-12] <- St_hw[t-1] + Tt_hw[t-1] + It_hw[t-12]
+  }
+}
+mape_hw <- mean(abs((estimation - Prevt_hw[1:(n-12)]) / estimation)) * 100
+## Affichage du MAPE et des paramètres optimaux
+cat("MAPE pour la méthode Holt-Winters additive :", mape_hw, "%\n")
+cat("Paramètre alpha optimal :", best_alpha_hw, "\n")
+cat("Paramètre beta optimal :", best_beta_hw, "\n")
+cat("Paramètre gamma optimal :", best_gamma_hw, "\n")
+```
+
+### Visualisation des prévisions et données observées sur les échantillons d'estimation
+
+```{r}
+plot(data$Date[1:(n-12)], estimation, type = "l", col = "blue", xlab = "Date",
+ ylab = "Valeur", main = "Données observées et prévisions Holt-Winters")
+lines(data$Date[1:(n-12)], Prevt_hw[1:(n-12)], col = "red")
+legend("topleft", legend = c("Données réelles", "Prévision"), 
+col = c("blue", "red"), lty = 1)
+```
+
+## La méthode de Holt-Winters multiplicative
+
+### Formulation théorique
+
+La méthode de Holt-Winters multiplicative est adaptée aux séries 
+dont l'amplitude saisonnière **croît proportionnellement** au 
+niveau. La prévision à l'horizon $h$ est :
+
+$$\hat{Y}_T(h) = (S_T + h \cdot T_T) \times I_{T+h-s}$$
+
+Les trois composantes sont mises à jour par :
+
+$$\boxed{S_t = \alpha\left(\frac{Y_t}{I_{t-s}}\right) + (1 - \alpha)(S_{t-1} + T_{t-1})}$$
+
+$$\boxed{T_t = \beta(S_t - S_{t-1}) + (1 - \beta)T_{t-1}}$$
+
+$$\boxed{I_t = \delta\left(\frac{Y_t}{S_t}\right) + (1 - \delta)I_{t-s}}$$
+
+avec $0 < \alpha < 1$, $0 < \beta < 1$ et $0 < \delta < 1$.
+
+**Initialisation :** Pour $t = 0, -1, \ldots, -(s-1)$ :
+
+- $S_0 = \bar{Y}_{1:s}$ (moyenne des $s$ premières observations)
+- $T_0 = 0$  
+- $I_{-k} = Y_{s-k} / S_0$ pour $k = 0, 1, \ldots, s-1$
+
+### Interprétation
+
+La différence fondamentale avec le cas additif réside dans la façon 
+dont la saisonnalité intervient : par **multiplication** dans la 
+prévision et par **division** dans la mise à jour du niveau. 
+Les coefficients saisonniers $I_t$ sont sans unité et oscillent 
+autour de 1 (contre 0 pour le cas additif).
+
+
+### Estimations des paramètres qui minimisent le MAPE
+
+```{r}
+model_hw_mult <- hw(data_ts, seasonal = "multiplicative", h = 12)   
+best_alpha_hw_mult <- model_hw_mult$model$par["alpha"]
+best_beta_hw_mult <- model_hw_mult$model$par["beta"]
+best_gamma_hw_mult <- model_hw_mult$model$par["gamma"]
+```
+
+
+### Prévision à l'aide de la méthode de Holt-Winters multiplicative
+
+```{r}
+St_hw_mult <- c(rep(mean(data$Valeur[1:12]), 12), rep(0, length(estimation)))
+Tt_hw_mult <- c(rep(0, 12), rep(0, length(estimation)))
+It_hw_mult <- c(rep(0, 12), rep(0, length(estimation)))
+Prevt_hw_mult <- c(estimation[1], rep(0, n - 1))
+
+for (i in 1:12) {
+  It_hw_mult[i] <- data$Valeur[i] / St_hw_mult[i]
+} 
+
+for (t in 13:length(St_hw_mult)) {
+  St_hw_mult[t] <- best_alpha_hw_mult * (estimation[t-12] / It_hw_mult[t-12]) + 
+  (1 - best_alpha_hw_mult) * (St_hw_mult[t-1] + Tt_hw_mult[t-1])
+
+  Tt_hw_mult[t] <- best_beta_hw_mult * (St_hw_mult[t] - St_hw_mult[t-1]) + 
+  (1 - best_beta_hw_mult) * Tt_hw_mult[t-1]
+
+  It_hw_mult[t] <- best_gamma_hw_mult * (estimation[t-12] / St_hw_mult[t]) + 
+  (1 - best_gamma_hw_mult) * It_hw_mult[t-12]
+
+  if(t>13) {
+    Prevt_hw_mult[t-12] <- (St_hw_mult[t-1] + Tt_hw_mult[t-1])*It_hw_mult[t-12]
+  }
+}
+
+mape_hw_mult <- mean(abs((estimation - 
+                            Prevt_hw_mult[1:(n-12)])/estimation))*100
+## Affichage du MAPE et des paramètres optimaux
+cat("MAPE pour la méthode Holt-Winters multiplicative :", mape_hw_mult, "%\n")
+cat("Paramètre alpha optimal :", best_alpha_hw_mult, "\n")
+cat("Paramètre beta optimal :", best_beta_hw_mult, "\n")
+cat("Paramètre gamma optimal :", best_gamma_hw_mult, "\n")
+```
+
+### Visualisation des prévisions et données observées sur les échantillons d'estimation
+
+```{r}
+plot(data$Date[1:(n-12)], estimation, type = "l", 
+col = "blue", xlab = "Date", ylab = "Valeur", 
+main = "Données observées et prévisions Holt-Winters multiplicative")
+lines(data$Date[1:(n-12)], Prevt_hw_mult[1:(n-12)], col = "orange")
+legend("topleft", legend = c("Données réelles", "Prévision"), 
+col = c("blue", "orange"), lty = 1)
+```
+
+## Comparaison des méthodes de lissage
+
+```{r}
+mape_values <- c(mape_holt, mape_hw, mape_hw_mult)
+print(mape_values)
+barplot(mape_values,
+        names.arg = c("Holt", "HW Additif", "HW Multiplicatif"),
+        col = c("green", "red", "orange"),
+        main = "Comparaison des MAPE des méthodes de lissage",
+        ylab = "MAPE (%)",
+        ylim = c(0, max(mape_values) * 1.2))
+text(x = c(0.7, 1.9, 3.1),
+     y = mape_values + 0.05,
+     labels = round(mape_values, 4),
+     cex = 0.9)
+```
+
+
+## choix de la meilleure méthode de lissage
+
+D'après les résultats obtenus, la méthode holt présente le MAPE le plus faible, 
+ce qui indique qu'elle est la meilleure méthode de lissage pour notre série 
+temporelle. Par conséquent, nous allons utiliser la méthode holt pour faire les 
+prévisions sur l'échantillon de prévision.
+
+
+## Prévision sur l'échantillon de prévision à l'aide de la méthode holt
+
+```{r}
+# Prévision pour les 12 prochains mois
+for(h in 1:12) {
+   Prevt_holt[length(estimation) + h] <- St_holt[length(estimation)] + 
+   h * Tt_holt[length(estimation)]
+}
+#### 2.6.1 Calcul du MAPE sur l'échantillon de prévision
+mape_prevision <- mean(abs((prevision - 
+                              Prevt_holt[(n-11):(n)]) / prevision)) * 100
+cat("MAPE pour la prévision sur l'échantillon de prévision :", 
+mape_prevision, "%\n")
+```
+
+
+### Graphique final sur l'ensemble de l'échantillon comportant les observations et les prévisions 
+
+```{r}
+plot(data$Date, data$Valeur, type = "l", col = "blue", xlab = "Date", 
+ylab = "Valeur", main = "Données observées et prévisions Holt")
+lines(data$Date[1:(n-12)], Prevt_holt[1:(n-12)], col = "green")
+lines(data$Date[(n-11):n], Prevt_holt[(n-11):n], col = "red")
+legend("topleft", legend = c("Données réelles", "Prévision (estimation)", 
+"Prévision (prévision)"), col = c("blue", "green", "red"), lty = 1)
+```
+
+# Partie 4 : Méthodes Box-Jenkins
+
+## Analyses de la série de l'échantillon d'estimation
+
+### Visuation de la série temporelle de l'échantillon d'estimation
+
+```{r}
+plot(data$Date[1:(n-12)], estimation, type = "l", col = "blue", xlab = "Date", ylab = "Valeur", 
+main = "Série temporelle de l'échantillon d'estimation")
+```
+
+### Analyse du graphique de la série
+
+La série temporelle de l'échantillon d'estimation présente une tendance à la hausse entre 1980 et 2012 suivie d'une baisse entre 2012 et 2026. Cette tendance suggère que
+la série n'est pas statonnaire, ce qui est confirmé par les tests de stationnarité que nous allons effectuer par la suite.
+
+
+### Tests de stationnarité
+
+```{r}
+library(tseries)
+estimation_ts <- ts(estimation, frequency = 12)
+adf_test <- adf.test(estimation_ts)
+print(adf_test)
+```
+Le test de Dickey-Fuller augmenté (ADF) indique que la série n'est pas stationnaire, car la p-value est supérieure à 0.05. Par conséquent, nous allons différencier la série pour la rendre stationnaire.
+```{r}
+diff_estimation_ts <- diff(estimation_ts)
+plot(diff_estimation_ts, type = "l", col = "blue", xlab = "Date", 
+ylab = "Différencié de la valeur", 
+main = "Série temporelle différenciée de l'échantillon d'estimation")
+adf_test_diff <- adf.test(diff_estimation_ts)
+print(adf_test_diff)
+```
+Après différenciation, le test ADF indique que la série est désormais stationnaire, car la p-value est inférieure à 0.05. Nous pouvons donc procéder à l'identification du modèle ARMA pour la série différenciée.
+
+### Identification du modèle ARMA
+
+```{r}
+library(forecast)
+acf(diff_estimation_ts, main = "ACF de la série différenciée")
+pacf(diff_estimation_ts, main = "PACF de la série différenciée")
+```
+
+L’analyse de la fonction d’autocorrélation (ACF) de la série différenciée montre un pic significatif au retard 1, suivi d’une extinction rapide des autocorrélations.
+
+La fonction d’autocorrélation partielle (PACF) ne présente pas de coupure nette mais une décroissance progressive.
+
+Ces résultats suggèrent que la série suit un processus MA(1), ce qui conduit à considérer un modèle final : ARIMA(0,1,1).
+
+### Confirmation et sélection du modèle final
+
+#### Étape 1 : Test du modèle initial ARIMA(0,1,1)
+
+L'analyse des ACF et PACF suggérait un modèle ARIMA(0,1,1).
+Nous estimons ce modèle et testons la qualité de ses résidus
+via le test de Ljung-Box.
+
+```{r arima_011}
+# Estimation du modèle initial
+model_011 <- arima(estimation_ts, order = c(0,1,1))
+print(model_011)
+
+# Test de Ljung-Box sur les résidus
+lb_011 <- Box.test(model_011$residuals, lag = 20, type = "Ljung-Box")
+cat("Ljung-Box ARIMA(0,1,1) — statistique X² =", round(lb_011$statistic, 3),
+    "| p-value =", round(lb_011$p.value, 4), "\n")
+```
+
+La p-value du test de Ljung-Box est **0.010 < 0.05** : on rejette H$_0$,
+les résidus présentent encore de l'autocorrélation. Le modèle ARIMA(0,1,1)
+n'est donc **pas validé** et nous devons explorer des modèles plus complexes.
+
+#### Étape 2 : Comparaison de modèles candidats
+
+Nous comparons six modèles ARIMA sur la base de l'AIC et du test de
+Ljung-Box (lag = 20) afin de sélectionner le meilleur candidat.
+
+```{r comparaison_modeles}
+modeles <- list(
+  "ARIMA(0,1,1)" = arima(estimation_ts, order = c(0,1,1)),
+  "ARIMA(1,1,1)" = arima(estimation_ts, order = c(1,1,1)),
+  "ARIMA(0,1,2)" = arima(estimation_ts, order = c(0,1,2)),
+  "ARIMA(1,1,2)" = arima(estimation_ts, order = c(1,1,2)),
+  "ARIMA(2,1,1)" = arima(estimation_ts, order = c(2,1,1)),
+  "ARIMA(2,1,2)" = arima(estimation_ts, order = c(2,1,2))
+)
+
+resultats <- data.frame(
+  Modele          = names(modeles),
+  AIC             = sapply(modeles, AIC),
+  LjungBox_pvalue = sapply(modeles, function(m) {
+    Box.test(m$residuals, lag = 20, type = "Ljung-Box")$p.value
+  })
+)
+resultats$Residus <- ifelse(resultats$LjungBox_pvalue > 0.05,
+                            "Bruit blanc", "Autocorrele")
+resultats <- resultats[order(resultats$AIC), ]
+
+knitr::kable(resultats,
+             caption = "Comparaison des modèles ARIMA candidats",
+             digits  = 4,
+             col.names = c("Modèle", "AIC", "p-value Ljung-Box", "Résidus"),
+             row.names = FALSE)
+```
+
+Seuls **ARIMA(1,1,2)** (AIC = -340.69, p = 0.063) et **ARIMA(2,1,2)**
+(AIC = -340.28, p = 0.072) produisent des résidus non autocorrélés.
+ARIMA(1,1,2) est préféré sur la base de l'AIC le plus faible.
+
+#### Étape 3 : Vérification des coefficients ARIMA(1,1,2)
+
+```{r coef_112}
+model_112 <- arima(estimation_ts, order = c(1,1,2))
+
+coefs_112 <- model_112$coef
+se_112    <- sqrt(diag(model_112$var.coef))
+tstat_112 <- coefs_112 / se_112
+pval_112  <- 2 * (1 - pnorm(abs(tstat_112)))
+
+knitr::kable(data.frame(
+  Coefficient  = round(coefs_112, 5),
+  Std_Error    = round(se_112,    5),
+  t_stat       = round(tstat_112, 3),
+  p_value      = round(pval_112,  4),
+  Significatif = ifelse(pval_112 < 0.05, "Oui", "Non")
+), caption = "Significativité des coefficients ARIMA(1,1,2)",
+   row.names = TRUE)
+```
+
+Le coefficient **ma1 n'est pas significatif** (p = 0.22 > 0.05).
+Conformément au **principe de parcimonie**, nous estimons un modèle
+contraint en fixant ma1 = 0, ne conservant que les paramètres ar1 et ma2.
+
+#### Étape 4 : Modèle contraint ARIMA(1,1,2) avec ma1 = 0
+
+```{r modele_contraint}
+model_contraint <- arima(estimation_ts,
+                         order        = c(1,1,2),
+                         include.mean = FALSE,
+                         fixed        = c(NA, 0, NA))
+
+# Extraire uniquement les paramètres non fixés
+coefs    <- model_contraint$coef[c("ar1", "ma2")]
+se       <- sqrt(diag(model_contraint$var.coef))
+t_stat   <- coefs / se
+p_values <- 2 * (1 - pnorm(abs(t_stat)))
+
+knitr::kable(data.frame(
+  Coefficient  = round(coefs,    5),
+  Std_Error    = round(se,       5),
+  t_stat       = round(t_stat,   3),
+  p_value      = round(p_values, 4),
+  Significatif = ifelse(p_values < 0.05, "Oui", "Non")
+), caption = "Coefficients du modèle final ARIMA(1,1,2) contraint (ma1 = 0)",
+   row.names = TRUE)
+
+lb_contraint <- Box.test(model_contraint$residuals, lag = 20, type = "Ljung-Box")
+cat("AIC du modèle contraint :", round(AIC(model_contraint), 4), "\n")
+cat("Ljung-Box — X² =", round(lb_contraint$statistic, 3),
+    "| p-value =", round(lb_contraint$p.value, 4), "\n")
+```
+
+Les deux coefficients **ar1** et **ma2** sont hautement significatifs
+(p < 0.001). La p-value du test de Ljung-Box est supérieure à 0.05 :
+les résidus constituent un **bruit blanc**. Le modèle est donc validé.
+
+```{r residus_graphique}
+par(mfrow = c(1, 2))
+acf(model_contraint$residuals,
+    main = "ACF des résidus 
+    ARIMA(1,1,2) contraint")
+pacf(model_contraint$residuals,
+     main = "PACF des résidus 
+     ARIMA(1,1,2) contraint")
+par(mfrow = c(1, 1))
+```
+
+Le modèle final retenu s'écrit :
+
+$$(1 + 0.674\, B)(1-B)X_t = (1 - 0.560\, B^2)\,\varepsilon_t$$
+
+où $B$ est l'opérateur retard, $\hat{\phi}_1 = -0.674$ le coefficient
+autorégressif et $\hat{\theta}_2 = -0.560$ le coefficient de moyenne
+mobile d'ordre 2.
+
+## Prévision à l'aide du modèle ARIMA(1,1,2) contraint
+
+### Prévision des 12 dernières observations
+
+```{r prevision_arima}
+forecast_arima <- forecast(model_contraint, h = 12)
+Prev_arima     <- forecast_arima$mean
+```
+
+### Calcul du MAPE sur l'échantillon de prévision
+
+```{r mape_arima}
+mape_arima <- mean(abs((prevision - Prev_arima) / prevision)) * 100
+cat("MAPE — ARIMA(1,1,2) contraint :", round(mape_arima, 4), "%\n")
+```
+
+## Comparaison des prévisions : lissage vs Box-Jenkins
+
+### Graphique des observations et des prévisions
+
+```{r graphique_final}
+plot(data$Date, data$Valeur, type = "l", col = "blue",
+     xlab = "Date", ylab = "Valeur (milliards d'euros)",
+     main = "Observations et previsions (1980-2026)")
+lines(data$Date[(n-11):n], Prevt_holt[(n-11):n], col = "red", lwd = 2)
+lines(data$Date[(n-11):n], as.numeric(Prev_arima), col = "green", lwd = 2)
+legend("topleft", legend = c("Observations", "Holt", "ARIMA(1,1,2)"),
+       col = c("blue", "red", "green"), lty = 1)
+```
+
+### Tableau comparatif des prévisions et MAPE
+
+```{r tableau_comparatif}
+comparaison_data <- data.frame(
+  Date            = format(data$Date[(n-11):n], "%Y-%m"),
+  Observe         = round(prevision, 3),
+  Prevision_Holt  = round(Prevt_holt[(n-11):n], 3),
+  Prevision_ARIMA = round(as.numeric(Prev_arima), 3),
+  Erreur_Holt     = round(abs(prevision - Prevt_holt[(n-11):n])
+                           / prevision * 100, 2),
+  Erreur_ARIMA    = round(abs(prevision - as.numeric(Prev_arima))
+                           / prevision * 100, 2)
+)
+
+knitr::kable(comparaison_data,
+             caption   = "Prévisions sur les 12 dernières observations (milliards d'euros)",
+             col.names = c("Date", "Observe (Md euros)", "Holt",
+                           "ARIMA(1,1,2) contraint",
+                           "Erreur Holt (%)", "Erreur ARIMA (%)"),
+             row.names = FALSE)
+
+# Tableau des MAPE
+knitr::kable(data.frame(
+  Methode        = c("Holt (meilleur lissage)",
+                     "ARIMA(1,1,2) contraint (ma1 = 0)"),
+  MAPE_prevision = paste0(round(c(mape_prevision, mape_arima), 4), " %")
+), caption   = "MAPE sur l'echantillon de prevision (12 observations)",
+   col.names = c("Methode", "MAPE"),
+   row.names = FALSE)
+```
+
+## Conclusion
+
+```{r conclusion_auto, echo=FALSE}
+meilleure <- ifelse(mape_prevision <= mape_arima,
+                    "Holt", "ARIMA(1,1,2) contraint (ma1 = 0)")
+mape_min  <- min(mape_prevision, mape_arima)
+mape_max  <- max(mape_prevision, mape_arima)
+```
+
+Ce travail a porté sur l'analyse et la prévision de la consommation
+mensuelle des ménages en énergie, eau et déchets (idBank INSEE 011794485)
+sur la période janvier 1980 -- janvier 2026, à l'aide de deux approches :
+le **lissage exponentiel** (méthodes de Holt et Holt-Winters) et la
+**modélisation Box-Jenkins** (ARIMA).
+
+**Stratégie Box-Jenkins :** L'identification a suivi une démarche
+progressive en quatre étapes : 
+(1) test ADF confirmant la non-stationnarité
+(p = 0.919), 
+(2) différenciation d'ordre 1 rendant la série stationnaire
+(p < 0.01), 
+(3) lecture des ACF/PACF suggérant ARIMA(0,1,1), invalidé
+par le test de Ljung-Box (p = 0.010), 
+(4) comparaison de six modèles
+candidats conduisant au modèle contraint ARIMA(1,1,2) avec ma1 = 0,
+dont tous les coefficients sont significatifs et les résidus constituent
+un bruit blanc.
+
+**Comparaison finale :** Sur l'échantillon de prévision (12 dernières
+observations), la méthode **`r meilleure`** présente le MAPE le plus
+faible (**`r round(mape_min, 3)` %** contre `r round(mape_max, 3)` %
+pour l'autre approche) et constitue donc la **méthode retenue**.
+
+**Sur la méthode Holt :** Sa simplicité (deux paramètres) la rend
+robuste pour des séries à tendance linéaire stable. Elle est adaptée
+au court terme mais ne capture pas les effets saisonniers résiduels.
+
+**Sur le modèle ARIMA(1,1,2) contraint :** Ce modèle, sélectionné
+après une stratégie d'identification rigoureuse, capture efficacement
+la structure de dépendance à court terme de la série différenciée.
+La contrainte ma1 = 0 garantit la parcimonie et la significativité
+de tous les paramètres estimés.
+
+**Perspective d'amélioration :** Compte tenu du profil de la série
+(tendance non linéaire, saisonnalité résiduelle possible), une extension
+naturelle serait d'explorer un modèle **SARIMA(p,d,q)(P,D,Q)$_{12}$**,
+capable de modéliser explicitement la composante saisonnière et
+susceptible d'améliorer la qualité des prévisions à moyen terme.
